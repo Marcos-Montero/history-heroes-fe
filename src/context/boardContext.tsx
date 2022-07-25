@@ -76,20 +76,20 @@ export const BoardProvider: FC<Props> = ({ children }) => {
         const down = [hero.position[0], hero.position[1] - i]
         const left = [hero.position[0] - i, hero.position[1]]
         const right = [hero.position[0] + i, hero.position[1]]
-        const topLeft = [hero.position[0] - i, hero.position[1] + i]
-        const topRight = [hero.position[0] + i, hero.position[1] + i]
-        const botLeft = [hero.position[0] - i, hero.position[1] - i]
-        const botRight = [hero.position[0] + i, hero.position[1] - i]
+        // const topLeft = [hero.position[0] - i, hero.position[1] + i]
+        // const topRight = [hero.position[0] + i, hero.position[1] + i]
+        // const botLeft = [hero.position[0] - i, hero.position[1] - i]
+        // const botRight = [hero.position[0] + i, hero.position[1] - i]
         return [
           ...acc,
           up,
           down,
           left,
           right,
-          topLeft,
-          topRight,
-          botLeft,
-          botRight,
+          // topLeft,
+          // topRight,
+          // botLeft,
+          // botRight,
         ]
       },
       [] as IPosition[],
