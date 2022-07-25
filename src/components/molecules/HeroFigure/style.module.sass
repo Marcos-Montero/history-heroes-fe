@@ -1,0 +1,30 @@
+.heroFigure_container
+  position: relative
+.frameHero
+  height: 80px
+  width: 80px
+  border-radius: 100%
+  overflow: hidden
+  border-right: 4px solid black
+  border-botom: 4px solid black
+  background: #ffffff77
+  display: flex
+  align-items: center
+  justify-content: center
+  box-shadow: 2px 2px 4px black
+  &.team1
+    outline: darkorange 2px solid
+  &.team2
+    outline: darkcyan 2px solid
+  &.selected
+    animation: floating infinite 3s
+    background: white
+    z-index: 4
+  >svg
+    width: 100%
+    height: 100%
+
+@keyframes floating
+  50%
+    box-shadow: 10px 10px 20px black
+    transform: scale(1.1)

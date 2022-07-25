@@ -1,0 +1,42 @@
+.square
+  position: relative
+  width: 14.285%
+  height: 14.285%
+  background: #cacaca
+  outline: 1px solid #ddd
+  display: flex
+  align-items: center
+  justify-content: center
+  &:hover
+    background: radial-gradient(#dadada, #c0c0c0)
+    cursor: pointer
+  &.selected
+    transform: scale(1.08)
+    background: radial-gradient(#dadada, #c0c0c0)
+    box-shadow: inset 0 0 60px #009dff22
+    z-index: 3
+    border-radius: 8px
+  &.moveOption
+    transform: scale(1.02)
+    box-shadow: inset 0 0 10px blue
+    background: #6991ce
+  &.attackOption
+    transform: scale(1.02)
+    box-shadow: inset 0 0 10px red
+    background: #e46d6d
+  &.hq1
+    background: darkcyan
+    outline: 2px solid brown
+    z-index: 4
+    border-radius: 4px
+    box-shadow: 0 0 12px black
+  &.hq2
+    background: darkorange
+    outline: 2px solid brown
+    z-index: 4
+    border-radius: 4px
+    box-shadow: 0 0 12px black
+  &.wall1
+    background: darkorange
+  &.wall2
+    background: darkcyan

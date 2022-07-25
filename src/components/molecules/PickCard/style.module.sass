@@ -1,0 +1,103 @@
+.cardContainer
+  position: relative
+  height: 150px
+  width: 120px
+  box-shadow: 2px 2px 4px #202020ba
+  border-radius: 8px
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-direction: column
+  background: #eee
+  transition-duration: .3s
+  overflow: hidden
+  .actionIconFrame
+    background: rgba(0,0,0,.7)
+    position: absolute
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 100%
+    height: 100%
+    top: 0
+    left: 0
+    z-index: 5
+    border: solid 1px radial-gradient
+    opacity: 0
+    transition-duration: .3s
+    color: orange
+  &:hover
+    cursor: pointer
+    background: #fff
+    transform: scale(1.05)
+    >.actionIconFrame
+      opacity: 1
+  &.-warrior
+    outline: solid 3px rgb(144,207,105)
+  &.-artist
+    outline: solid 3px rgb(153,239,239)
+  &.-thinker
+    outline: solid 3px rgb(250,247,108)
+  &.-ruler
+    outline: solid 3px rgb(255,155,155)
+.imgFrame
+  position: absolute
+  top: 0
+  margin-top: 0
+  width: 300px
+  box-shadow: inset 0 0 15px black
+  outline: red solid 1px
+.name
+  position: absolute
+  top: 64px
+  text-shadow: 0 0 2px black
+  z-index: 3
+  color: white
+  text-align: right
+  right: 4px
+.roleFrame
+  position: absolute
+  top: 80px
+  z-index: 2
+  left: -4px
+  background: #666
+  border-radius: 100%
+  width: 30px
+  height: 30px
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 5px
+  border-right: 1px solid black
+  border-bottom: 2px solid black
+  &.-warrior
+    >*
+      stroke: rgb(144,207,105)
+  &.-artist
+    >svg
+      width: 25px
+    >svg>path
+      fill: rgb(153,239,239)
+  &.-thinker
+    >svg
+      width: 20px
+    >svg>path
+      fill: rgb(250,247,108)
+  &.-ruler
+    >svg
+      width: 25px
+    >svg>path
+      fill: rgb(255,155,155)
+.statsFrame
+  background: #666
+  position: absolute
+  bottom: 0
+  width: 100%
+  height: 50px
+  left: 0
+.statusContainer
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-direction: column
+  padding: 10px
