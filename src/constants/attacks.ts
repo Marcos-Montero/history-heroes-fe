@@ -13,3 +13,6 @@ export const heal = () => {
 export const rulerBuff = () => {
   console.log('assassinBuff')
 }
+export const assassin = () => {
+  console.log('assassin')
+}
