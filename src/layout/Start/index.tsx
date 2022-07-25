@@ -5,6 +5,7 @@ import s from './style.module.sass'
 import { heroes } from '../../constants/heroes'
 import { PickCard } from '../../components/molecules/PickCard'
 import { IHero } from '../../types'
+import { does } from '../../utils'
 
 export const Start = () => {
   const {
@@ -42,12 +43,10 @@ export const Start = () => {
       (selectingPlayer === 2 && player2heroes.length < 3)
     ) {
       addHero(hero, selectingPlayer)
-      setAvailableHeroes(availableHeroes.filter((v) => v.name !== hero.name))
     }
   }
   const removeHeroFromMyTeam = (hero: IHero) => {
     removeHero(hero, selectingPlayer)
-    setAvailableHeroes((availableHeroes) => [...availableHeroes, hero])
   }
   const randomPick = () => {
     const heroValues = Object.values(heroes)
@@ -86,7 +85,13 @@ export const Start = () => {
     setPlayer2heroes(randomTeam2)
     setAllHeroesSelected(true)
   }
-
+  const handleCardClick = (v: IHero) => {
+    if (does(player1heroes).contain(v)) {
+      removeHeroFromMyTeam(v)
+    } else {
+      addHeroToMyTeam(v)
+    }
+  }
   return (
     <div className={s.startContainer}>
       {!allHeroesSelected ? (
@@ -103,35 +108,17 @@ export const Start = () => {
                   <PickCard
                     hero={v}
                     key={i}
-                    onClick={() => addHeroToMyTeam(v)}
+                    onClick={() => handleCardClick(v)}
                     adding
+                    chosen={
+                      selectingPlayer === 1
+                        ? does(player1heroes).contain(v)
+                        : does(player2heroes).contain(v)
+                    }
                   />
                 )
               })}
             </div>
-          </div>
-          <h3>Team</h3>
-          <div className={s.pickedContainer}>
-            {selectingPlayer === 1
-              ? Object.entries(player1heroes).map(([k, v], i) => {
-                  return (
-                    <PickCard
-                      hero={v}
-                      key={i}
-                      onClick={() => removeHeroFromMyTeam(v)}
-                      removing
-                    />
-                  )
-                })
-              : Object.entries(player2heroes).map(([k, v], i) => {
-                  return (
-                    <PickCard
-                      hero={v}
-                      key={i}
-                      onClick={() => removeHeroFromMyTeam(v)}
-                    />
-                  )
-                })}
           </div>
           <div>
             <button

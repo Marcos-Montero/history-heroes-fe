@@ -6,9 +6,8 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { ISingleHeroStats } from './matchContext'
+import { IPosition, ISingleHeroStats } from '../types'
 
-export type IPosition = number[]
 type Context = {
   // square selection
   squareSelected?: IPosition

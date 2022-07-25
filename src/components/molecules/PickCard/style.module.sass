@@ -40,6 +40,12 @@
     outline: solid 3px rgb(250,247,108)
   &.-ruler
     outline: solid 3px rgb(255,155,155)
+  &.-chosen
+    box-shadow: 0 0 15px #ffb300, inset 2px 2px 4px #202020ba
+    transfrom: scale(1.2)
+    border: 2px solid white
+    transform: scale(1.2)
+
 .imgFrame
   position: absolute
   top: 0
@@ -88,6 +94,7 @@
       width: 25px
     >svg>path
       fill: rgb(255,155,155)
+
 .statsFrame
   background: #666
   position: absolute
@@ -101,3 +108,13 @@
   justify-content: center
   flex-direction: column
   padding: 10px
+.selectedFlag
+  position: absolute
+  width: 100px
+  height: 100px
+  background: #ffbb00d4
+  border: 2px solid #acacac
+  bottom: -70px
+  right: -70px
+  z-index: 5
+  transform: rotate(45deg)

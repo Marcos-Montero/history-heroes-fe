@@ -9,8 +9,8 @@ const a = {
 }
 
 const x = {
-  ...a,
-  c: { d: { e: 6 }, ...a.c },
+  b: a.b,
+  c: { d: { e: 6 }, he: a.c.he },
 }
 
 console.log(x)

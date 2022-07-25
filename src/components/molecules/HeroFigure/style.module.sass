@@ -1,5 +1,7 @@
 .heroFigure_container
   position: relative
+  transition: 1s
+  animation: appear 1s
 .frameHero
   height: 80px
   width: 80px
@@ -28,3 +30,8 @@
   50%
     box-shadow: 10px 10px 20px black
     transform: scale(1.1)
+@keyframes appear
+  0%
+    opacity: 0
+  100%
+    opacity: 100

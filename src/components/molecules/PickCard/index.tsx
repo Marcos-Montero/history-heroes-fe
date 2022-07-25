@@ -8,8 +8,15 @@ type IPickCard = {
   onClick?: () => void
   adding?: boolean
   removing?: boolean
+  chosen?: boolean
 }
-export const PickCard = ({ hero, onClick, adding, removing }: IPickCard) => {
+export const PickCard = ({
+  hero,
+  onClick,
+  adding,
+  removing,
+  chosen,
+}: IPickCard) => {
   const { role, img, name, health, power, stamina, movement } = hero
   return (
     <div
@@ -19,6 +26,7 @@ export const PickCard = ({ hero, onClick, adding, removing }: IPickCard) => {
         role === 'artist' && s['-artist'],
         role === 'thinker' && s['-thinker'],
         role === 'ruler' && s['-ruler'],
+        chosen && s['-chosen'],
       )}
       onClick={onClick}
     >
@@ -27,6 +35,7 @@ export const PickCard = ({ hero, onClick, adding, removing }: IPickCard) => {
           <Svg name={adding ? 'add' : 'remove'} width={80} height={80} />
         </div>
       )}
+      {chosen && <div className={s.selectedFlag}></div>}
       <div className={s.imgFrame}>
         <Svg name={img} width={125} height={125} />
       </div>

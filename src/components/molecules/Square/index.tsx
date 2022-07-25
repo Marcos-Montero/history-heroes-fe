@@ -1,11 +1,8 @@
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { useBoard } from '../../../context/boardContext'
-import {
-  IHeroStatus,
-  ISingleHeroStats,
-  useMatch,
-} from '../../../context/matchContext'
+import { useMatch } from '../../../context/matchContext'
+import { IHeroStatus, ISingleHeroStats } from '../../../types'
 import { does } from '../../../utils'
 import { HeroFigure } from '../HeroFigure'
 import s from './style.module.sass'
@@ -36,7 +33,8 @@ export const Square = ({ position }: Props) => {
     (position[0] === 7 && position[1] === 4)
 
   const handleSquareClick = () => {
-    if (moveOptions && does(moveOptions).contain(position)) {
+    if (moveOptions && does(moveOptions).contain(position) && heroSelected) {
+      console.log(`moving ${heroSelected.hero.name} to ${position}`)
       move(heroSelected).to(position)
     }
     selectSquare(position)
@@ -52,6 +50,7 @@ export const Square = ({ position }: Props) => {
     )
   }
   useEffect(() => {
+    setOccupant(undefined)
     if (heroStatus) {
       Object.entries(heroStatus).forEach(
         ([key, playerHeroes]: [string, IHeroStatus]) => {
@@ -91,7 +90,7 @@ export const Square = ({ position }: Props) => {
       {occupant && (
         <HeroFigure
           heroName={occupant.hero.img}
-          team={occupant.team}
+          team={occupant.player}
           selected={heroSelected === occupant}
           onClick={handleSquareClick}
         />

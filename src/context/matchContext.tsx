@@ -6,32 +6,16 @@ import React, {
   Dispatch,
   SetStateAction,
 } from 'react'
-import { IHero } from '../types'
+import { IHero, IHeroStatus, IPosition, ISingleHeroStats } from '../types'
+import produce from 'immer'
 
 type Props = {
   children?: React.ReactNode
 }
-type IPosition = number[]
-export type ISingleHeroStats = {
-  hero: IHero
-  position: IPosition
-  team: 1 | 2
-}
-export interface IHeroStatus {
-  player1: {
-    hero1: ISingleHeroStats
-    hero2: ISingleHeroStats
-    hero3: ISingleHeroStats
-  }
-  player2: {
-    hero1: ISingleHeroStats
-    hero2: ISingleHeroStats
-    hero3: ISingleHeroStats
-  }
-}
+
 interface Context {
   inGame: boolean
-  setInGame: SetStateAction<boolean>
+  setInGame: Dispatch<SetStateAction<boolean>>
   player1heroes: IHero[]
   player2heroes: IHero[]
   addHero: (hero: IHero, playerNumber: number) => void
@@ -72,58 +56,71 @@ export const MatchProvider: FC<Props> = ({ children }) => {
         hero1: {
           hero: player1heroes[0],
           position: [1, 2],
-          team: 1,
+          player: 1,
+          id: 1,
         },
         hero2: {
           hero: player1heroes[1],
           position: [2, 2],
-          team: 1,
+          player: 1,
+          id: 2,
         },
         hero3: {
           hero: player1heroes[2],
           position: [2, 1],
-          team: 1,
+          player: 1,
+          id: 3,
         },
       },
       player2: {
         hero1: {
           hero: player2heroes[0],
           position: [7, 6],
-          team: 2,
+          player: 2,
+          id: 1,
         },
         hero2: {
           hero: player2heroes[1],
           position: [6, 6],
-          team: 2,
+          player: 2,
+          id: 2,
         },
         hero3: {
           hero: player2heroes[2],
           position: [6, 7],
-          team: 2,
+          player: 2,
+          id: 3,
         },
       },
     })
   }
-  const moveHeroTo = (hero: ISingleHeroStats, position: IPosition) => {
-    const player: 'player1' | 'player2' = `player${hero.team}`
-    setHeroStatus({
-      ...heroStatus,
-      [player]: {
-        ...heroStatus[player],
-        position,
-      },
-    })
-  }
+
   const move = (
     hero: ISingleHeroStats,
   ): { to: (position: IPosition) => void } => {
     const methods = {
       to: (position: IPosition) => {
-        moveHeroTo(hero, position)
+        setHeroStatus(
+          produce(heroStatus, (draft: IHeroStatus) => {
+            draft[`player${hero.player}`][`hero${hero.id}`].position = position
+          }),
+        )
       },
     }
     return methods
   }
+  /*   const attack = (heroAttacked) => {
+    const methods = {
+      with: (attack) => {
+        setHeroStatus(
+          produce(heroStatus, (draft: IHeroStatus))=>{
+            draft[`player`]
+          }
+        )
+      }
+    }
+    return methods
+  } */
   return (
     <MatchContext.Provider
       value={{

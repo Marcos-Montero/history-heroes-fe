@@ -1,8 +1,8 @@
-import { IPosition } from '../context/boardContext'
+import { IPosition } from '../types'
 
 export const does = (
-  bigArray: IPosition[],
-): { contain: (smallArray: IPosition) => boolean } => {
+  bigArray: any,
+): { contain: (smallArray: any) => boolean } => {
   const methods = {
     contain: (smallArray: IPosition): boolean => {
       const bigParsed = JSON.stringify(bigArray)
