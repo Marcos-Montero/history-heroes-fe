@@ -12,7 +12,7 @@
   transition-duration: .3s
   overflow: hidden
   .actionIconFrame
-    background: rgba(0,0,0,.7)
+    background: rgba(255,255,255,.3)
     position: absolute
     display: flex
     align-items: center
@@ -29,26 +29,29 @@
   &:hover
     cursor: pointer
     background: #fff
-    transform: scale(1.05)
     >.actionIconFrame
       opacity: 1
   &.-warrior
-    outline: solid 3px rgb(144,207,105)
+    border-bottom: solid 2px rgb(144,207,105)
+    border-right: solid 1px rgb(144,207,105)
   &.-artist
-    outline: solid 3px rgb(153,239,239)
+    border-bottom: solid 2px rgb(153,239,239)
+    border-right: solid 1px rgb(153,239,239)
   &.-thinker
-    outline: solid 3px rgb(250,247,108)
+    border-bottom: solid 2px rgb(250,247,108)
+    border-right: solid 1px rgb(250,247,108)
   &.-ruler
-    outline: solid 3px rgb(255,155,155)
+    border-bottom: solid 2px rgb(255,155,155)
+    border-right: solid 1px rgb(255,155,155)
   &.-chosen
     box-shadow: 0 0 15px #ffb300, inset 2px 2px 4px #202020ba
     transfrom: scale(1.2)
     border: 2px solid white
     transform: scale(1.2)
-
 .imgFrame
   position: absolute
   top: 0
+  left: 0
   margin-top: 0
   width: 300px
   box-shadow: inset 0 0 15px black
@@ -94,7 +97,6 @@
       width: 25px
     >svg>path
       fill: rgb(255,155,155)
-
 .statsFrame
   background: #666
   position: absolute

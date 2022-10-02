@@ -1,10 +1,17 @@
+$t1 : #ff6f00
+$t2 : #0077ff
+
 .playerCard_container
-  background: #eee
   height: 100px
   width: 400px
+  padding: 8px
+  margin: 16px 0
+  border-radius: 8px
   &.-player1
+    background: $t1
     align-self: flex-start
-    border: 2px orange solid
+    border: 2px white solid
   &.-player2
-    border: 2px darkcyan solid
+    background: $t2
+    border: 2px white solid
     align-self: flex-end

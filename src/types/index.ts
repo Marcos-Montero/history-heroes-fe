@@ -2,35 +2,23 @@ export type HeroesNames =
   | 'nefertiti'
   | 'leonidas'
   | 'attila'
-  | 'mariCurie'
-  | 'daVinci'
-  | 'sunTzu'
-  | 'isabel'
+  | 'marie_curie'
+  | 'da_vinci'
+  | 'sun_tzu'
+  | 'isabel_i'
   | 'bach'
   | 'cleopatra'
 export type RolesNames = 'artist' | 'thinker' | 'warrior' | 'ruler'
 export interface IHero {
-  name: string
+  name: HeroesNames
   role: RolesNames
-  img: HeroesNames
   power: number
   health: number
   stamina: number
   movement: number
   defense: number
-  attacks: (() => void)[]
 }
-export interface IHeroes {
-  nefertiti: IHero
-  leonidas: IHero
-  attila: IHero
-  mariCurie: IHero
-  daVinci: IHero
-  sunTzu: IHero
-  bach: IHero
-  isabel: IHero
-  cleopatra: IHero
-}
+export type IHeroes = IHero[]
 export type IPosition = number[]
 export type ISingleHeroStats = {
   hero: IHero

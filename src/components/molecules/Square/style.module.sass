@@ -1,42 +1,49 @@
+$t1 : #ff6f00
+$t2 : #0077ff
 .square
   position: relative
   width: 14.285%
   height: 14.285%
-  background: #cacaca
-  outline: 1px solid #ddd
+  outline: 1px solid rgba(200,200,200,.05)
   display: flex
   align-items: center
   justify-content: center
   &:hover
-    background: radial-gradient(#dadada, #c0c0c0)
+    background: radial-gradient(rgba(200,200,200,.05), rgba(200,200,200,.15))
     cursor: pointer
   &.selected
     transform: scale(1.08)
-    background: radial-gradient(#dadada, #c0c0c0)
+    background: radial-gradient(rgba(200,200,200,.05), rgba(200,200,200,.15))
     box-shadow: inset 0 0 60px #009dff22
     z-index: 3
     border-radius: 8px
   &.moveOption
     transform: scale(1.02)
-    box-shadow: inset 0 0 10px blue
-    background: #6991ce
+    box-shadow: inset 0 0 10px green
+    background: #29ff370e
   &.attackOption
     transform: scale(1.02)
     box-shadow: inset 0 0 10px red
-    background: #e46d6d
+    background: #e46d6d2a
   &.hq1
-    background: darkcyan
+    background: $t2
     outline: 2px solid brown
     z-index: 4
     border-radius: 4px
     box-shadow: 0 0 12px black
   &.hq2
-    background: darkorange
+    background: $t1
     outline: 2px solid brown
     z-index: 4
     border-radius: 4px
     box-shadow: 0 0 12px black
   &.wall1
-    background: darkorange
+    background: $t2
+    outline: none
+    z-index: 2
+    box-shadow: inset 100px 0 50px $t1
   &.wall2
-    background: darkcyan
+    outline: none
+    background: $t1
+    z-index: 2
+    box-shadow: inset -100px 0 50px $t2

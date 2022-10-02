@@ -34,12 +34,12 @@ const svgs = {
   nefertiti: <NefertitiSVG />,
   leonidas: <LeonidasSVG />,
   attila: <AttilaSVG />,
-  mariCurie: <MariCurieSVG />,
-  daVinci: <DaVinciSVG />,
-  sunTzu: <SunTzuSVG />,
+  marie_curie: <MariCurieSVG />,
+  da_vinci: <DaVinciSVG />,
+  sun_tzu: <SunTzuSVG />,
   bach: <BachSVG />,
   cleopatra: <CleopatraSVG />,
-  isabel: <IsabelSVG />,
+  isabel_i: <IsabelSVG />,
 
   // Roles
   ruler: <RulerSVG />,

@@ -13,3 +13,27 @@ export const does = (
   }
   return methods
 }
+export const selectRandomly = (arr: any[]) =>
+  parseInt((Math.random() * (arr.length - 1)).toFixed(0))
+
+export const buildTriplet = (arr: any[], triplet: number[] = []) => {
+  const randomSelection: number = selectRandomly(arr)
+  if (!triplet.includes(randomSelection)) {
+    triplet.push(randomSelection)
+  }
+  if (!triplet.includes(randomSelection)) {
+    if (triplet.length < 3) {
+      buildTriplet(triplet, arr)
+    }
+  }
+  return triplet
+}
+export const formatName = (rawName: string) => {
+  const separatedWords = rawName.split('_')
+  const firstCapitalizedWords = separatedWords.map((v) => {
+    const firstLetter = v[0].toUpperCase()
+    const rest = v.slice(1)
+    return firstLetter + rest
+  })
+  return firstCapitalizedWords.join(' ')
+}

@@ -1,11 +1,11 @@
 import classNames from 'classnames'
 import { useState } from 'react'
 import { HeroSlide } from '../../components/molecules/HeroSlide'
-import { useMatch } from '../../context/matchContext'
+import { useBoard } from '../../context/boardContext'
 import { Svg } from '../../svg'
 import s from './style.module.sass'
 export const CardSection = () => {
-  const { player1heroes, player2heroes } = useMatch()
+  const { player1heroes, player2heroes } = useBoard()
   const [wrap, setWrap] = useState(false)
 
   return (

@@ -1,13 +1,12 @@
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { useBoard } from '../../../context/boardContext'
-import { useMatch } from '../../../context/matchContext'
 import { IHeroStatus, ISingleHeroStats } from '../../../types'
 import { does } from '../../../utils'
 import { HeroFigure } from '../HeroFigure'
 import s from './style.module.sass'
 type Props = {
-  position: number[]
+  position: [number, number]
 }
 export const Square = ({ position }: Props) => {
   const [occupant, setOccupant] = useState<ISingleHeroStats>()
@@ -19,18 +18,22 @@ export const Square = ({ position }: Props) => {
     selectHero,
     attackOptions,
   } = useBoard()
-  const { move } = useMatch()
-  const { heroStatus } = useMatch()
-  const isHQ1 = position[0] === 1 && position[1] === 7
-  const isHQ2 = position[0] === 7 && position[1] === 1
+  const { move, heroStatus } = useBoard()
+  const isHQ1 = position[0] === 7 && position[1] === 1
+  const isHQ2 = position[0] === 1 && position[1] === 7
+  const checkIfPos = (arr: number[]) => {
+    return {
+      equals: (x: number, y: number) => arr[0] === x && arr[1] === y,
+    }
+  }
   const isWall1 =
-    (position[0] === 1 && position[1] === 4) ||
-    (position[0] === 2 && position[1] === 4) ||
-    (position[0] === 3 && position[1] === 4)
+    checkIfPos(position).equals(1, 4) ||
+    checkIfPos(position).equals(2, 4) ||
+    checkIfPos(position).equals(3, 4)
   const isWall2 =
-    (position[0] === 5 && position[1] === 4) ||
-    (position[0] === 6 && position[1] === 4) ||
-    (position[0] === 7 && position[1] === 4)
+    checkIfPos(position).equals(5, 4) ||
+    checkIfPos(position).equals(6, 4) ||
+    checkIfPos(position).equals(7, 4)
 
   const handleSquareClick = () => {
     if (moveOptions && does(moveOptions).contain(position) && heroSelected) {
@@ -56,10 +59,7 @@ export const Square = ({ position }: Props) => {
         ([key, playerHeroes]: [string, IHeroStatus]) => {
           Object.entries(playerHeroes).forEach(
             ([k, hero]: [string, ISingleHeroStats]): void => {
-              if (
-                hero.position[0] === position[0] &&
-                hero.position[1] === position[1]
-              ) {
+              if (checkIfPos(hero.position).equals(position[0], position[1])) {
                 setOccupant(hero)
                 console.log(position + ': ' + occupant?.hero.name)
               }
@@ -89,13 +89,14 @@ export const Square = ({ position }: Props) => {
     <div className={squareStyle} onClick={handleSquareClick}>
       {occupant && (
         <HeroFigure
-          heroName={occupant.hero.img}
+          heroName={occupant.hero.name}
           team={occupant.player}
           selected={heroSelected === occupant}
           onClick={handleSquareClick}
         />
       )}
-      {(isHQ1 || isHQ2) && <h3>HQ</h3>}
+      {isHQ1 && <h3>HQ1</h3>}
+      {isHQ2 && <h3>HQ2</h3>}
     </div>
   )
 }

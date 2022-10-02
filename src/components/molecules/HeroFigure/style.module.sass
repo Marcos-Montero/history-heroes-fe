@@ -1,3 +1,6 @@
+$t1 : #ff6f00
+$t2 : #0077ff
+
 .heroFigure_container
   position: relative
   transition: 1s
@@ -9,15 +12,15 @@
   overflow: hidden
   border-right: 4px solid black
   border-botom: 4px solid black
-  background: #ffffff77
+  background: #ffffff
   display: flex
   align-items: center
   justify-content: center
   box-shadow: 2px 2px 4px black
   &.team1
-    outline: darkorange 2px solid
+    outline: $t1 2px solid
   &.team2
-    outline: darkcyan 2px solid
+    outline: $t2 2px solid
   &.selected
     animation: floating infinite 3s
     background: white

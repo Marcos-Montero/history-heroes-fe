@@ -1,111 +1,85 @@
 import { IHeroes } from '../types'
-import {
-  attack,
-  fireRange,
-  heal,
-  rulerBuff,
-  warriorBuff,
-  assassin,
-} from './attacks'
 
-export const heroes: IHeroes = {
-  nefertiti: {
-    name: 'Nefertiti',
-    img: 'nefertiti',
+export const heroes: IHeroes = [
+  {
+    name: 'nefertiti',
     role: 'ruler',
     power: 400,
     health: 900,
     stamina: 200,
     defense: 200,
     movement: 3,
-    attacks: [attack, fireRange],
   },
-  leonidas: {
-    name: 'Leonidas',
-    img: 'leonidas',
+  {
+    name: 'leonidas',
     role: 'warrior',
     power: 200,
     health: 1100,
     stamina: 200,
     movement: 2,
     defense: 300,
-    attacks: [attack, warriorBuff],
   },
-  mariCurie: {
-    name: 'Marie Curie',
-    img: 'mariCurie',
+  {
+    name: 'marie_curie',
     role: 'artist',
     power: 250,
     health: 800,
     stamina: 400,
     movement: 4,
     defense: 150,
-    attacks: [attack, heal],
   },
-  daVinci: {
-    name: 'Da Vinci',
-    img: 'daVinci',
+  {
+    name: 'da_vinci',
     role: 'artist',
     power: 150,
     health: 800,
     stamina: 450,
     movement: 4,
     defense: 150,
-    attacks: [attack, heal],
   },
-  attila: {
-    name: 'Attila',
-    img: 'attila',
+  {
+    name: 'attila',
     role: 'ruler',
     power: 300,
     health: 850,
     stamina: 250,
     movement: 3,
     defense: 300,
-    attacks: [attack, rulerBuff],
   },
-  sunTzu: {
-    name: 'Sun Tzu',
-    img: 'sunTzu',
+  {
+    name: 'sun_tzu',
     role: 'thinker',
     power: 300,
     health: 750,
     stamina: 350,
     movement: 4,
     defense: 200,
-    attacks: [attack, fireRange],
   },
-  isabel: {
-    name: 'Isabel I',
-    img: 'isabel',
+  {
+    name: 'isabel_i',
     role: 'ruler',
     power: 450,
     health: 800,
     stamina: 200,
     movement: 4,
     defense: 150,
-    attacks: [attack, assassin],
   },
-  bach: {
-    name: 'Bach',
-    img: 'bach',
+  {
+    name: 'bach',
     role: 'artist',
     power: 150,
     health: 750,
     stamina: 500,
     movement: 4,
     defense: 200,
-    attacks: [attack, heal],
   },
-  cleopatra: {
-    name: 'Cleopatra',
-    img: 'cleopatra',
+  {
+    name: 'cleopatra',
     role: 'ruler',
     power: 600,
     health: 600,
     stamina: 300,
     movement: 3,
     defense: 200,
-    attacks: [attack, assassin],
   },
-}
+]

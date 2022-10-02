@@ -1,11 +1,18 @@
 /* eslint-disable indent */
 import { useState } from 'react'
-import { useMatch } from '../../context/matchContext'
-import s from './style.module.sass'
+import { useBoard } from '../../context/boardContext'
 import { heroes } from '../../constants/heroes'
 import { PickCard } from '../../components/molecules/PickCard'
 import { IHero } from '../../types'
-import { does } from '../../utils'
+import { buildTriplet, does } from '../../utils'
+import {
+  ConfirmButton,
+  FinalCardsContainer,
+  PickableContainer,
+  RandomButton,
+  StartButton,
+  StartContainer,
+} from './style'
 
 export const Start = () => {
   const {
@@ -16,16 +23,18 @@ export const Start = () => {
     player2heroes,
     setPlayer1heroes,
     setPlayer2heroes,
-  } = useMatch()
+  } = useBoard()
   const [selectingPlayer, setSelectingPlayer] = useState(1)
   const [availableHeroes, setAvailableHeroes] = useState<IHero[]>(
     Object.entries(heroes).map(([k, v]) => v),
   )
   const [allHeroesSelected, setAllHeroesSelected] = useState(false)
-
+  const resetAvailableHeroes = () => {
+    setAvailableHeroes(Object.entries(heroes).map(([k, v]) => v))
+  }
   const changeToPlayer2 = () => {
     setSelectingPlayer(2)
-    setAvailableHeroes(Object.entries(heroes).map(([k, v]) => v))
+    resetAvailableHeroes()
   }
   const handleConfirmTeam = () => {
     if (selectingPlayer === 1) {
@@ -33,8 +42,6 @@ export const Start = () => {
     }
     if (selectingPlayer === 2) {
       setAllHeroesSelected(true)
-      /*       appear()
-       */
     }
   }
   const addHeroToMyTeam = (hero: IHero) => {
@@ -48,28 +55,10 @@ export const Start = () => {
   const removeHeroFromMyTeam = (hero: IHero) => {
     removeHero(hero, selectingPlayer)
   }
-  const randomPick = () => {
+  const generateTeams = () => {
     const heroValues = Object.values(heroes)
-
-    const randomNum = () =>
-      parseInt((Math.random() * (heroValues.length - 1)).toFixed(0))
-
-    // eslint-disable-next-line prefer-const
-    let randomTriplet1: number[] = []
-    // eslint-disable-next-line prefer-const
-    let randomTriplet2: number[] = []
-
-    const buildTriplet = (triplet: number[]) => {
-      const n: number = randomNum()
-      if (!triplet.includes(n)) {
-        triplet.push(n)
-      }
-      if (triplet.length < 3) {
-        buildTriplet(triplet)
-      }
-    }
-    buildTriplet(randomTriplet1)
-    buildTriplet(randomTriplet2)
+    const randomTriplet1 = buildTriplet(heroValues)
+    const randomTriplet2 = buildTriplet(heroValues)
 
     const randomTeam1 = [
       heroValues[randomTriplet1[0]],
@@ -81,6 +70,10 @@ export const Start = () => {
       heroValues[randomTriplet2[1]],
       heroValues[randomTriplet2[2]],
     ]
+    return [randomTeam1, randomTeam2]
+  }
+  const randomPick = () => {
+    const [randomTeam1, randomTeam2] = generateTeams()
     setPlayer1heroes(randomTeam1)
     setPlayer2heroes(randomTeam2)
     setAllHeroesSelected(true)
@@ -92,69 +85,58 @@ export const Start = () => {
       addHeroToMyTeam(v)
     }
   }
+
   return (
-    <div className={s.startContainer}>
+    <StartContainer>
       {!allHeroesSelected ? (
-        <div className={s.selectingContainer}>
-          <div className={s.messageContainer}></div>
-          <div className={s.pickableFrame}>
-            <button onClick={randomPick} className={s.randomButton}>
-              (?) Random Picks (?)
-            </button>
-            <h1>Pick your 3 heroes:</h1>
-            <div className={s.pickableContainer}>
-              {Object.entries(availableHeroes).map(([k, v], i) => {
-                return (
-                  <PickCard
-                    hero={v}
-                    key={i}
-                    onClick={() => handleCardClick(v)}
-                    adding
-                    chosen={
-                      selectingPlayer === 1
-                        ? does(player1heroes).contain(v)
-                        : does(player2heroes).contain(v)
-                    }
-                  />
-                )
-              })}
-            </div>
-          </div>
-          <div>
-            <button
-              className={s.confirmButton}
-              onClick={handleConfirmTeam}
-              disabled={
-                (selectingPlayer === 1 && player1heroes.length !== 3) ||
-                (selectingPlayer === 2 && player2heroes.length !== 3)
-              }
-            >
-              Confirm Team
-            </button>
-          </div>
-        </div>
+        <>
+          <h1>Pick your 3 heroes:</h1>
+          <PickableContainer>
+            {Object.entries(availableHeroes).map(([k, v], i) => {
+              return (
+                <PickCard
+                  hero={v}
+                  key={i}
+                  onClick={() => handleCardClick(v)}
+                  adding
+                  chosen={
+                    selectingPlayer === 1
+                      ? does(player1heroes).contain(v)
+                      : does(player2heroes).contain(v)
+                  }
+                />
+              )
+            })}
+          </PickableContainer>
+          <ConfirmButton
+            onClick={handleConfirmTeam}
+            disabled={
+              (selectingPlayer === 1 && player1heroes.length !== 3) ||
+              (selectingPlayer === 2 && player2heroes.length !== 3)
+            }
+          >
+            Confirm Team
+          </ConfirmButton>
+          <RandomButton onClick={randomPick}>(?) Random Picks (?)</RandomButton>
+        </>
       ) : (
         <>
-          <div className={s.finalContainer}>
-            <h1>These are the Heroes Selected:</h1>
-            <div className={s.finalCardsContainer}>
-              <h1>Player 1: </h1>
-              {Object.entries(player1heroes).map(([k, v], i) => {
-                return <PickCard hero={v} key={i} />
-              })}
-            </div>
-            <div className={s.finalCardsContainer}>
-              <h1>Player 2: </h1>
-              {Object.entries(player2heroes).map(([k, v], i) => {
-                return <PickCard hero={v} key={i} />
-              })}
-            </div>
-            <button onClick={() => startGame()} className={s.startButton}>
-              Start Game
-            </button>
-          </div>
+          <h1>These are the Heroes Selected:</h1>
+          <FinalCardsContainer>
+            <h1>Player 1: </h1>
+            {Object.entries(player1heroes).map(([k, v], i) => {
+              return <PickCard hero={v} key={i} />
+            })}
+          </FinalCardsContainer>
+          <FinalCardsContainer>
+            <h1>Player 2: </h1>
+            {Object.entries(player2heroes).map(([k, v], i) => {
+              return <PickCard hero={v} key={i} />
+            })}
+          </FinalCardsContainer>
+          <StartButton onClick={() => startGame()}>Start Game</StartButton>
         </>
       )}
-    </div>
+    </StartContainer>
   )
 }

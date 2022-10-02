@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { Svg } from '../../../svg'
 import { IHero } from '../../../types'
+import { formatName } from '../../../utils'
 import { StatusBar } from '../../atoms/StatusBar'
 import s from './style.module.sass'
 type IPickCard = {
@@ -17,7 +18,7 @@ export const PickCard = ({
   removing,
   chosen,
 }: IPickCard) => {
-  const { role, img, name, health, power, stamina, movement } = hero
+  const { role, name, health, power, stamina, movement } = hero
   return (
     <div
       className={classNames(
@@ -37,9 +38,9 @@ export const PickCard = ({
       )}
       {chosen && <div className={s.selectedFlag}></div>}
       <div className={s.imgFrame}>
-        <Svg name={img} width={125} height={125} />
+        <Svg name={name} width={125} height={125} />
       </div>
-      <h3 className={s.name}>{name}</h3>
+      <h3 className={s.name}>{formatName(name)}</h3>
       <div
         className={classNames(
           s.roleFrame,

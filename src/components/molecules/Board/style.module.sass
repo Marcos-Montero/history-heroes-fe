@@ -1,7 +1,11 @@
+$t1 : #ff6f00
+$t2 : #0077ff
+$shadowOffset : 4px
+$negSO: -4px
+
 .boardContainer
   position: relative
   width: 50vw
-  border: 1px solid black
   height: 50vh
   display: flex
   justify-content: left
@@ -11,6 +15,6 @@
   overflow: hidden
   border-radius: 20px
   overflow: hidden
-  border-left: 6px solid darkorange
-  border-right: 6px solid darkcyan
-  box-shadow: inset 0 0 10px black
+  border-left: 3px solid $t1 
+  border-right: 3px solid $t2
+  box-shadow:  $shadowOffset $shadowOffset 20px $t2, $negSO $negSO 20px $t1

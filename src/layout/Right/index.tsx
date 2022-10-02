@@ -2,11 +2,11 @@ import s from './style.module.sass'
 import classNames from 'classnames'
 import { useState } from 'react'
 import { HeroSlide } from '../../components/molecules/HeroSlide'
-import { useMatch } from '../../context/matchContext'
 import { Svg } from '../../svg'
+import { useBoard } from '../../context/boardContext'
 
 export const Right = () => {
-  const { player1heroes, player2heroes } = useMatch()
+  const { player1heroes, player2heroes } = useBoard()
   const [wrap, setWrap] = useState(false)
 
   return (
