@@ -4,7 +4,6 @@ import s from './style.module.sass'
 export const MoveAction = () => {
   const { heroSelected, showMoveOptions } = useBoard()
   const handleMove = () => {
-    console.log('hehehehe')
     heroSelected && showMoveOptions(heroSelected)
   }
   return (

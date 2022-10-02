@@ -47,3 +47,11 @@ export interface IOptions {
     left: boolean
   }
 }
+export interface IOccupant {
+  value: boolean
+  occupant?: ISingleHeroStats
+}
+export interface IHQ {
+  value: boolean
+  hq: 1 | 2 | undefined
+}

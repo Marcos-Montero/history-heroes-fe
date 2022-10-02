@@ -17,7 +17,7 @@ import {
   ISingleHeroStats,
 } from '../types'
 import produce from 'immer'
-import { isWall } from '../utils'
+import { isHQ, isOccupied, isWall } from '../utils'
 
 type Context = {
   inGame: boolean
@@ -31,6 +31,8 @@ type Context = {
   startGame: () => void
   heroStatus: IHeroStatus | undefined
   move: (hero: ISingleHeroStats) => { to: (position: IPosition) => void }
+  turn: 1 | 2
+  toggleTurn: () => void
   // square selection
   squareSelected?: IPosition
   selectSquare: (position: IPosition) => void
@@ -82,6 +84,11 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   const [heroStatus, setHeroStatus] = useState<IHeroStatus | undefined>(
     undefined,
   )
+  const [turn, setTurn] = useState<1 | 2>(1)
+
+  const toggleTurn = () => {
+    turn === 1 ? setTurn(2) : setTurn(1)
+  }
 
   const removeSelection = () => setSquareSelected([0, 0])
   const selectSquare = (position: IPosition) => {
@@ -101,7 +108,6 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   // MOVEMENT
 
   const showMoveOptions = (hero: ISingleHeroStats) => {
-    console.log('moving!')
     resetOptions()
     setActiveAction('move')
     const moveRange = hero.hero.movement
@@ -116,6 +122,24 @@ export const BoardProvider: FC<Props> = ({ children }) => {
         const right: IPosition = [x + i, y]
 
         const result = produce(acc, (draft: IOptions) => {
+          // CHECK IF OCCUPANT OR HQ
+          let skipUp = false
+          let skipRight = false
+          let skipBottom = false
+          let skipLeft = false
+          if (isOccupied(up, heroStatus).value || isHQ(up).value) {
+            skipUp = true
+          }
+          if (isOccupied(right, heroStatus).value || isHQ(right).value) {
+            skipRight = true
+          }
+          if (isOccupied(bottom, heroStatus).value || isHQ(bottom).value) {
+            skipBottom = true
+          }
+          if (isOccupied(left, heroStatus).value || isHQ(left).value) {
+            skipLeft = true
+          }
+          // CHECK IF WALL
           if (isWall(up).value && isWall(up).wall === hero.player) {
             draft.blocks.up = true
           }
@@ -128,10 +152,10 @@ export const BoardProvider: FC<Props> = ({ children }) => {
           if (isWall(left).value && isWall(left).wall === hero.player) {
             draft.blocks.left = true
           }
-          !draft.blocks.up && draft.positions.push(up)
-          !draft.blocks.right && draft.positions.push(right)
-          !draft.blocks.bottom && draft.positions.push(bottom)
-          !draft.blocks.left && draft.positions.push(left)
+          !skipUp && !draft.blocks.up && draft.positions.push(up)
+          !skipRight && !draft.blocks.right && draft.positions.push(right)
+          !skipBottom && !draft.blocks.bottom && draft.positions.push(bottom)
+          !skipLeft && !draft.blocks.left && draft.positions.push(left)
         })
         return result
       },
@@ -279,6 +303,8 @@ export const BoardProvider: FC<Props> = ({ children }) => {
         startGame,
         heroStatus,
         move,
+        turn,
+        toggleTurn,
         // square selection
         squareSelected,
         selectSquare,

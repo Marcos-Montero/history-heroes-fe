@@ -1,5 +1,11 @@
-import { wall1, wall2 } from '../constants/board'
-import { IPosition } from '../types'
+import { HQ1, HQ2, wall1, wall2 } from '../constants/board'
+import {
+  IHeroStatus,
+  IHQ,
+  IOccupant,
+  IPosition,
+  ISingleHeroStats,
+} from '../types'
 
 export const does = (
   bigArray: any,
@@ -57,4 +63,36 @@ export const isWall = (arr: number[]) => {
     wall: isWall1 ? 1 : isWall2 && 2,
   }
   return result
+}
+export const isOccupied = (
+  position: IPosition,
+  heroStatus: IHeroStatus | undefined,
+): IOccupant => {
+  let result: IOccupant = { value: false }
+  if (heroStatus) {
+    Object.entries(heroStatus).forEach(
+      ([key, playerHeroes]: [string, IHeroStatus]) => {
+        Object.entries(playerHeroes).forEach(
+          ([k, hero]: [string, ISingleHeroStats]): void => {
+            if (checkIfPos(hero.position).equals([position[0], position[1]])) {
+              result = {
+                value: true,
+                occupant: hero,
+              }
+            }
+          },
+        )
+      },
+    )
+  }
+  return result
+}
+
+export const isHQ = (position: IPosition): IHQ => {
+  const isHQ1 = position === HQ1 ? 1 : undefined
+  const isHQ2 = position === HQ2 ? 2 : undefined
+  return {
+    value: checkIfPos(position).equals(HQ1) || checkIfPos(position).equals(HQ2),
+    hq: isHQ1 || isHQ2,
+  }
 }

@@ -2,8 +2,8 @@ import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { useBoard } from '../../../context/boardContext'
 import { Svg } from '../../../svg'
-import { IHeroStatus, ISingleHeroStats } from '../../../types'
-import { checkIfPos, does, isWall } from '../../../utils'
+import { ISingleHeroStats } from '../../../types'
+import { does, isOccupied, isWall } from '../../../utils'
 import { HeroFigure } from '../HeroFigure'
 import s from './style.module.sass'
 type Props = {
@@ -28,7 +28,6 @@ export const Square = ({ position }: Props) => {
 
   const handleSquareClick = () => {
     if (moveOptions && does(moveOptions).contain(position) && heroSelected) {
-      console.log(`moving ${heroSelected.hero.name} to ${position}`)
       move(heroSelected).to(position)
     }
     selectSquare(position)
@@ -36,31 +35,11 @@ export const Square = ({ position }: Props) => {
     if (occupant) {
       selectHero(occupant)
     }
-    console.log(
-      `%c{{ ⚔ POSITION [ ${position} ] SELECTED ${
-        occupant ? occupant?.hero.name + ' is on it' : ''
-      }⚔ }}`,
-      'color: orange; background: #2e2e2e; font-weight: bold',
-    )
   }
   useEffect(() => {
     setOccupant(undefined)
-    if (heroStatus) {
-      Object.entries(heroStatus).forEach(
-        ([key, playerHeroes]: [string, IHeroStatus]) => {
-          Object.entries(playerHeroes).forEach(
-            ([k, hero]: [string, ISingleHeroStats]): void => {
-              if (
-                checkIfPos(hero.position).equals([position[0], position[1]])
-              ) {
-                setOccupant(hero)
-                console.log(position + ': ' + occupant?.hero.name)
-              }
-            },
-          )
-        },
-      )
-    }
+    const { occupant } = isOccupied(position, heroStatus)
+    setOccupant(occupant)
   }, [heroStatus])
   const squareStyle = classNames(
     s.square,
@@ -94,7 +73,6 @@ export const Square = ({ position }: Props) => {
           heroName={occupant.hero.name}
           team={occupant.player}
           selected={heroSelected === occupant}
-          onClick={handleSquareClick}
         />
       )}
       {isHQ1 && <h3>HQ1</h3>}

@@ -7,12 +7,10 @@ export const HeroFigure = ({
   heroName,
   team,
   selected = false,
-  onClick,
 }: {
   heroName: HeroesNames
   team: 1 | 2
   selected: boolean
-  onClick: () => void
 }) => {
   return (
     <div className={s.heroFigure_container}>
@@ -23,7 +21,6 @@ export const HeroFigure = ({
           team === 1 ? s.team1 : s.team2,
           selected && s.selected,
         )}
-        onClick={onClick}
       >
         <Svg name={heroName} />
       </div>
