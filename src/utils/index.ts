@@ -1,3 +1,4 @@
+import { wall1, wall2 } from '../constants/board'
 import { IPosition } from '../types'
 
 export const does = (
@@ -36,4 +37,24 @@ export const formatName = (rawName: string) => {
     return firstLetter + rest
   })
   return firstCapitalizedWords.join(' ')
+}
+export const checkIfPos = (arr: number[]) => {
+  return {
+    equals: (pos: number[]) => arr[0] === pos[0] && arr[1] === pos[1],
+  }
+}
+export const isWall = (arr: number[]) => {
+  const isWall1 =
+    checkIfPos(arr).equals(wall1[0]) ||
+    checkIfPos(arr).equals(wall1[1]) ||
+    checkIfPos(arr).equals(wall1[2])
+  const isWall2 =
+    checkIfPos(arr).equals(wall2[0]) ||
+    checkIfPos(arr).equals(wall2[1]) ||
+    checkIfPos(arr).equals(wall2[2])
+  const result = {
+    value: isWall1 || isWall2,
+    wall: isWall1 ? 1 : isWall2 && 2,
+  }
+  return result
 }

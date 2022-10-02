@@ -9,8 +9,15 @@ import {
   SetStateAction,
 } from 'react'
 
-import { IHero, IHeroStatus, IPosition, ISingleHeroStats } from '../types'
+import {
+  IHero,
+  IHeroStatus,
+  IOptions,
+  IPosition,
+  ISingleHeroStats,
+} from '../types'
 import produce from 'immer'
+import { isWall } from '../utils'
 
 type Context = {
   inGame: boolean
@@ -90,52 +97,76 @@ export const BoardProvider: FC<Props> = ({ children }) => {
     removeMoveOptions()
     removeAttackOptions()
   }
+
+  // MOVEMENT
+
   const showMoveOptions = (hero: ISingleHeroStats) => {
+    console.log('moving!')
     resetOptions()
     setActiveAction('move')
     const moveRange = hero.hero.movement
-    const newOptions = Array.from({ length: moveRange }).reduce(
-      (acc: IPosition[], v, i) => {
-        i += 1
-        const up = [hero.position[0], hero.position[1] + i]
-        const down = [hero.position[0], hero.position[1] - i]
-        const left = [hero.position[0] - i, hero.position[1]]
-        const right = [hero.position[0] + i, hero.position[1]]
-        // const topLeft = [hero.position[0] - i, hero.position[1] + i]
-        // const topRight = [hero.position[0] + i, hero.position[1] + i]
-        // const botLeft = [hero.position[0] - i, hero.position[1] - i]
-        // const botRight = [hero.position[0] + i, hero.position[1] - i]
-        return [
-          ...acc,
-          up,
-          down,
-          left,
-          right,
-          // topLeft,
-          // topRight,
-          // botLeft,
-          // botRight,
-        ]
+
+    const moveRangeArray = Array.from({ length: moveRange })
+    const newPositions = moveRangeArray.reduce(
+      (acc: IOptions, v, i) => {
+        const [x, y] = hero.position
+        const up: IPosition = [x, y + i]
+        const bottom: IPosition = [x, y - i]
+        const left: IPosition = [x - i, y]
+        const right: IPosition = [x + i, y]
+
+        const result = produce(acc, (draft: IOptions) => {
+          if (isWall(up).value && isWall(up).wall === hero.player) {
+            draft.blocks.up = true
+          }
+          if (isWall(right).value && isWall(right).wall === hero.player) {
+            draft.blocks.right = true
+          }
+          if (isWall(bottom).value && isWall(bottom).wall === hero.player) {
+            draft.blocks.bottom = true
+          }
+          if (isWall(left).value && isWall(left).wall === hero.player) {
+            draft.blocks.left = true
+          }
+          !draft.blocks.up && draft.positions.push(up)
+          !draft.blocks.right && draft.positions.push(right)
+          !draft.blocks.bottom && draft.positions.push(bottom)
+          !draft.blocks.left && draft.positions.push(left)
+        })
+        return result
       },
-      [] as IPosition[],
+      {
+        positions: [],
+        blocks: {
+          up: false,
+          right: false,
+          bottom: false,
+          left: false,
+        },
+      } as IOptions,
     )
-    setMoveOptions(newOptions)
+    setMoveOptions(newPositions.positions)
   }
+
+  // ATTACK
+
   const showAttackOptions = (hero: ISingleHeroStats) => {
-    removeAttackOptions()
-    removeMoveOptions()
+    resetOptions()
     setActiveAction('attack')
     const attackRange = 1
     const newOptions = Array.from({ length: attackRange }).reduce(
       (acc: IPosition[], v, i) => {
-        const up = [hero.position[0], hero.position[1] + i]
-        const down = [hero.position[0], hero.position[1] - i]
-        const left = [hero.position[0] - i, hero.position[1]]
-        const right = [hero.position[0] + i, hero.position[1]]
-        const topLeft = [hero.position[0] - i, hero.position[1] + i]
-        const topRight = [hero.position[0] + i, hero.position[1] + i]
-        const botLeft = [hero.position[0] - i, hero.position[1] - i]
-        const botRight = [hero.position[0] + i, hero.position[1] - i]
+        i += 1
+        const [x, y] = hero.position
+
+        const up = [x, y + i]
+        const down = [x, y - i]
+        const left = [x - i, y]
+        const right = [x + i, y]
+        const topLeft = [x - i, y + i]
+        const topRight = [x + i, y + i]
+        const botLeft = [x - i, y - i]
+        const botRight = [x + i, y - i]
         return [
           ...acc,
           up,
@@ -150,6 +181,7 @@ export const BoardProvider: FC<Props> = ({ children }) => {
       },
       [] as IPosition[],
     )
+
     setAttackOptions(newOptions)
   }
   const selectHero = (hero?: ISingleHeroStats) => {

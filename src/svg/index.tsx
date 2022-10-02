@@ -21,9 +21,10 @@ import { ReactComponent as AttackSVG } from './attack.svg'
 import { ReactComponent as AddSVG } from './add.svg'
 import { ReactComponent as RemoveSVG } from './remove.svg'
 import { ReactComponent as UsersSVG } from './users.svg'
+import { ReactComponent as BasicArrowSVG } from './basicArrow.svg'
 
 type IAttacks = 'move' | 'attack'
-type IMisc = 'add' | 'remove' | 'users'
+type IMisc = 'add' | 'remove' | 'users' | 'basicArrow'
 
 interface ISvg extends SVGProps<SVGSVGElement> {
   name: HeroesNames | RolesNames | IMisc | IAttacks
@@ -47,14 +48,15 @@ const svgs = {
   thinker: <ThinkerSVG />,
   artist: <ArtistSVG />,
 
+  // Attacks
+  move: <MoveSVG />,
+  attack: <AttackSVG />,
+
   // Misc
   add: <AddSVG />,
   remove: <RemoveSVG />,
   users: <UsersSVG />,
-
-  // Attacks
-  move: <MoveSVG />,
-  attack: <AttackSVG />,
+  basicArrow: <BasicArrowSVG />,
 }
 
 export const Svg = ({ name, ...props }: ISvg) => {

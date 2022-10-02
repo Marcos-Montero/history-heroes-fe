@@ -1,8 +1,9 @@
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { useBoard } from '../../../context/boardContext'
+import { Svg } from '../../../svg'
 import { IHeroStatus, ISingleHeroStats } from '../../../types'
-import { does } from '../../../utils'
+import { checkIfPos, does, isWall } from '../../../utils'
 import { HeroFigure } from '../HeroFigure'
 import s from './style.module.sass'
 type Props = {
@@ -21,19 +22,9 @@ export const Square = ({ position }: Props) => {
   const { move, heroStatus } = useBoard()
   const isHQ1 = position[0] === 7 && position[1] === 1
   const isHQ2 = position[0] === 1 && position[1] === 7
-  const checkIfPos = (arr: number[]) => {
-    return {
-      equals: (x: number, y: number) => arr[0] === x && arr[1] === y,
-    }
-  }
-  const isWall1 =
-    checkIfPos(position).equals(1, 4) ||
-    checkIfPos(position).equals(2, 4) ||
-    checkIfPos(position).equals(3, 4)
-  const isWall2 =
-    checkIfPos(position).equals(5, 4) ||
-    checkIfPos(position).equals(6, 4) ||
-    checkIfPos(position).equals(7, 4)
+
+  const isWall1 = isWall(position).wall === 1
+  const isWall2 = isWall(position).wall === 2
 
   const handleSquareClick = () => {
     if (moveOptions && does(moveOptions).contain(position) && heroSelected) {
@@ -59,7 +50,9 @@ export const Square = ({ position }: Props) => {
         ([key, playerHeroes]: [string, IHeroStatus]) => {
           Object.entries(playerHeroes).forEach(
             ([k, hero]: [string, ISingleHeroStats]): void => {
-              if (checkIfPos(hero.position).equals(position[0], position[1])) {
+              if (
+                checkIfPos(hero.position).equals([position[0], position[1]])
+              ) {
                 setOccupant(hero)
                 console.log(position + ': ' + occupant?.hero.name)
               }
@@ -87,6 +80,15 @@ export const Square = ({ position }: Props) => {
   )
   return (
     <div className={squareStyle} onClick={handleSquareClick}>
+      {isWall(position).value && (
+        <div
+          style={{
+            transform: `rotate(${isWall1 ? '-90deg' : '90deg'})`,
+          }}
+        >
+          <Svg name="basicArrow" width={30} height={30} />
+        </div>
+      )}
       {occupant && (
         <HeroFigure
           heroName={occupant.hero.name}

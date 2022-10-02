@@ -38,3 +38,12 @@ export interface IHeroStatus {
     hero3: ISingleHeroStats
   }
 }
+export interface IOptions {
+  positions: IPosition[]
+  blocks: {
+    up: boolean
+    right: boolean
+    bottom: boolean
+    left: boolean
+  }
+}
