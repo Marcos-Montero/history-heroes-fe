@@ -1,14 +1,13 @@
-import classNames from 'classnames'
-import s from './style.module.sass'
+import { useBoard } from '../../../context/boardContext'
+import { ButtonEndTurn, PlayerCardContainer } from './style'
 export const PlayerCard = ({ p }: { p: 1 | 2 }) => {
+  const { turn, toggleTurn } = useBoard()
   return (
-    <div
-      className={classNames(
-        s.playerCard_container,
-        p === 1 ? s['-player1'] : s['-player2'],
-      )}
-    >
+    <PlayerCardContainer p={p} enabled={turn === p}>
       <h2>Player {p}</h2>
-    </div>
+      <ButtonEndTurn show={turn === p} onClick={toggleTurn}>
+        End Turn
+      </ButtonEndTurn>
+    </PlayerCardContainer>
   )
 }

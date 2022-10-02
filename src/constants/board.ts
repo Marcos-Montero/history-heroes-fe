@@ -11,3 +11,5 @@ export const wall2 = [
   [6, 4],
   [7, 4],
 ]
+export const p1Color = '#ff6f00'
+export const p2Color = '#0077ff'

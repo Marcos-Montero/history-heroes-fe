@@ -18,6 +18,7 @@ export const Square = ({ position }: Props) => {
     heroSelected,
     selectHero,
     attackOptions,
+    turn,
   } = useBoard()
   const { move, heroStatus } = useBoard()
   const isHQ1 = position[0] === 7 && position[1] === 1
@@ -27,7 +28,12 @@ export const Square = ({ position }: Props) => {
   const isWall2 = isWall(position).wall === 2
 
   const handleSquareClick = () => {
-    if (moveOptions && does(moveOptions).contain(position) && heroSelected) {
+    if (
+      turn === heroSelected?.player &&
+      moveOptions &&
+      does(moveOptions).contain(position) &&
+      heroSelected
+    ) {
       move(heroSelected).to(position)
     }
     selectSquare(position)

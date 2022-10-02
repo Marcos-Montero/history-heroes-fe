@@ -108,6 +108,9 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   // MOVEMENT
 
   const showMoveOptions = (hero: ISingleHeroStats) => {
+    if (hero.player !== turn) {
+      return
+    }
     resetOptions()
     setActiveAction('move')
     const moveRange = hero.hero.movement
