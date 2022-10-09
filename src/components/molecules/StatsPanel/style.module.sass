@@ -1,0 +1,44 @@
+.statsContainer 
+  height: 250px
+  width: 300px
+  background: lightgray
+  position: fixed
+  top: 0
+  right: 0
+  padding: 0 20px
+  > div > p
+    line-height: .5em
+  > .playerContainer
+      background: rgba(0,0,0,.2)
+      margin-bottom: 1px
+  
+
+.statsNumberContainer
+  outline: 2px solid black
+  border-radius: 8px
+  overflow: hidden
+  padding: 4px 0
+.health 
+ background: green
+ padding: 4px
+  
+.stamina 
+ background: yellow
+ padding: 4px
+
+.power 
+ background: red
+ padding: 4px
+ color: white
+  
+.defense 
+ background: blue
+ padding: 4px
+ color: white
+
+.heroContainer
+  display: flex
+  justify-content: space-between
+  &.dead
+    background: darkgray
+    color: darkred

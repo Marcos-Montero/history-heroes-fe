@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useBoard } from '../../../context/boardContext'
 import { Svg } from '../../../svg'
 import { ISingleHeroStats } from '../../../types'
-import { does, isOccupied, isWall } from '../../../utils'
+import { does, formatName, isOccupied, isWall } from '../../../utils'
 import { HeroFigure } from '../HeroFigure'
 import s from './style.module.sass'
 type Props = {
@@ -18,9 +18,11 @@ export const Square = ({ position }: Props) => {
     heroSelected,
     selectHero,
     attackOptions,
-    turn,
+    updateHero,
+    heroStatus,
+    updateStatusOfHero,
+    log,
   } = useBoard()
-  const { move, heroStatus } = useBoard()
   const isHQ1 = position[0] === 7 && position[1] === 1
   const isHQ2 = position[0] === 1 && position[1] === 7
 
@@ -28,14 +30,16 @@ export const Square = ({ position }: Props) => {
   const isWall2 = isWall(position).wall === 2
 
   const handleSquareClick = () => {
-    if (
-      turn === heroSelected?.player &&
-      moveOptions &&
-      does(moveOptions).contain(position) &&
-      heroSelected
-    ) {
-      move(heroSelected).to(position)
+    if (moveOptions && does(moveOptions).contain(position) && heroSelected) {
+      log(
+        `[ ${formatName(heroSelected.hero.name)} ] ${
+          heroSelected.position
+        } ⏩ ${position}`,
+      )
+      const movedHero = updateHero(heroSelected).position(position)
+      heroStatus && updateStatusOfHero(movedHero, heroStatus)
     }
+
     selectSquare(position)
     if (!occupant) selectHero(undefined)
     if (occupant) {
@@ -45,7 +49,7 @@ export const Square = ({ position }: Props) => {
   useEffect(() => {
     setOccupant(undefined)
     const { occupant } = isOccupied(position, heroStatus)
-    setOccupant(occupant)
+    occupant && occupant?.hero.health > 0 && setOccupant(occupant)
   }, [heroStatus])
   const squareStyle = classNames(
     s.square,
@@ -74,10 +78,15 @@ export const Square = ({ position }: Props) => {
           <Svg name="basicArrow" width={30} height={30} />
         </div>
       )}
-      {occupant && (
+      {occupant && occupant.hero.health > 0 && (
         <HeroFigure
-          heroName={occupant.hero.name}
-          team={occupant.player}
+          attackable={
+            attackOptions
+              ? does(attackOptions).contain(position) &&
+                heroSelected?.player !== occupant.player
+              : false
+          }
+          hero={occupant}
           selected={heroSelected === occupant}
         />
       )}

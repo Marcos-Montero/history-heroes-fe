@@ -19,6 +19,30 @@ import {
 import produce from 'immer'
 import { isHQ, isOccupied, isWall } from '../utils'
 
+type Props = {
+  children?: ReactNode
+}
+export enum Stats {
+  // eslint-disable-next-line no-unused-vars
+  POWER = 'power',
+  // eslint-disable-next-line no-unused-vars
+  STAMINA = 'stamina',
+  // eslint-disable-next-line no-unused-vars
+  MOVEMENT = 'movement',
+  // eslint-disable-next-line no-unused-vars
+  DEFENSE = 'defense',
+  // eslint-disable-next-line no-unused-vars
+  HEALTH = 'health',
+}
+export interface UpdateMethods {
+  power: (q: number) => ISingleHeroStats
+  stamina: (q: number) => ISingleHeroStats
+  health: (q: number) => ISingleHeroStats
+  movement: (q: number) => ISingleHeroStats
+  defense: (q: number) => ISingleHeroStats
+  position: (pos: number[]) => ISingleHeroStats
+}
+
 type Context = {
   inGame: boolean
   setInGame: Dispatch<SetStateAction<boolean>>
@@ -30,9 +54,11 @@ type Context = {
   setPlayer2heroes: Dispatch<SetStateAction<IHero[]>>
   startGame: () => void
   heroStatus: IHeroStatus | undefined
-  move: (hero: ISingleHeroStats) => { to: (position: IPosition) => void }
-  turn: 1 | 2
-  toggleTurn: () => void
+  setHeroStatus: Dispatch<SetStateAction<IHeroStatus | undefined>>
+  updateStatusOfHero: (
+    updatedHero: ISingleHeroStats,
+    heroStatus: IHeroStatus,
+  ) => void
   // square selection
   squareSelected?: IPosition
   selectSquare: (position: IPosition) => void
@@ -55,12 +81,11 @@ type Context = {
   showAttackOptions: (hero: ISingleHeroStats) => void
 
   activeAction?: 'move' | 'attack'
+  updateHero: (hero: ISingleHeroStats) => UpdateMethods
+  historical: string[] | undefined
+  log: (log: string) => void
 }
 const BoardContext = createContext<Context | undefined>(undefined)
-
-type Props = {
-  children?: ReactNode
-}
 
 export const BoardProvider: FC<Props> = ({ children }) => {
   const [squareSelected, setSquareSelected] = useState<number[] | undefined>(
@@ -84,11 +109,7 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   const [heroStatus, setHeroStatus] = useState<IHeroStatus | undefined>(
     undefined,
   )
-  const [turn, setTurn] = useState<1 | 2>(1)
-
-  const toggleTurn = () => {
-    turn === 1 ? setTurn(2) : setTurn(1)
-  }
+  const [historical, setHistorical] = useState<string[]>()
 
   const removeSelection = () => setSquareSelected([0, 0])
   const selectSquare = (position: IPosition) => {
@@ -108,9 +129,6 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   // MOVEMENT
 
   const showMoveOptions = (hero: ISingleHeroStats) => {
-    if (hero.player !== turn) {
-      return
-    }
     resetOptions()
     setActiveAction('move')
     const moveRange = hero.hero.movement
@@ -272,20 +290,43 @@ export const BoardProvider: FC<Props> = ({ children }) => {
       },
     })
   }
-
-  const move = (
-    hero: ISingleHeroStats,
-  ): { to: (position: IPosition) => void } => {
-    const methods = {
-      to: (position: IPosition) => {
-        setHeroStatus(
-          produce(heroStatus, (draft: IHeroStatus) => {
-            draft[`player${hero.player}`][`hero${hero.id}`].position = position
-          }),
-        )
-      },
+  const updateStatusOfHero = (
+    heroUpdated: ISingleHeroStats,
+    heroStatus: IHeroStatus,
+  ) => {
+    const updatedStatus = produce(heroStatus, (draft) => {
+      if (heroStatus && draft) {
+        draft[`player${heroUpdated.player}`][`hero${heroUpdated.id}`] =
+          heroUpdated
+      }
+    })
+    setHeroStatus(updatedStatus)
+  }
+  const updateHero = (hero: ISingleHeroStats): UpdateMethods => {
+    const updateStat = (stat: Stats, q: number) => {
+      const heroUpdated = produce(hero, (draft) => {
+        draft.hero[stat] = draft.hero[stat] + q
+      })
+      return heroUpdated
+    }
+    const updatePos = (pos: number[]) => {
+      const heroUpdated = produce(hero, (draft) => {
+        draft.position = pos
+      })
+      return heroUpdated
+    }
+    const methods: UpdateMethods = {
+      power: (q: number) => updateStat(Stats.POWER, q),
+      stamina: (q: number) => updateStat(Stats.STAMINA, q),
+      health: (q: number) => updateStat(Stats.HEALTH, q),
+      movement: (q: number) => updateStat(Stats.MOVEMENT, q),
+      defense: (q: number) => updateStat(Stats.DEFENSE, q),
+      position: (pos: number[]) => updatePos(pos),
     }
     return methods
+  }
+  const log = (str: string) => {
+    historical ? setHistorical([str, ...historical]) : setHistorical([str])
   }
   useEffect(() => {
     removeMoveOptions()
@@ -305,9 +346,7 @@ export const BoardProvider: FC<Props> = ({ children }) => {
         setPlayer2heroes,
         startGame,
         heroStatus,
-        move,
-        turn,
-        toggleTurn,
+        setHeroStatus,
         // square selection
         squareSelected,
         selectSquare,
@@ -330,6 +369,10 @@ export const BoardProvider: FC<Props> = ({ children }) => {
         removeHeroSelection,
 
         activeAction,
+        updateHero,
+        updateStatusOfHero,
+        historical,
+        log,
       }}
     >
       {children}
