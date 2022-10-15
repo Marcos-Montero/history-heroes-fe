@@ -5,7 +5,9 @@ import { WinnerScreen } from './layout/WinnerScreen'
 import './styles/_main.sass'
 const App = () => {
   const { inGame, winner } = useBoard()
-  return <>{inGame ? <Game /> : winner ? <WinnerScreen /> : <Start />}</>
+  const OutGame = winner ? <WinnerScreen /> : <Start />
+  const AppRender = <>{inGame ? <Game /> : OutGame}</>
+  return AppRender
 }
 
 export default App
