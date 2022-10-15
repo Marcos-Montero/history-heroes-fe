@@ -35,12 +35,12 @@ export enum Stats {
   HEALTH = 'health',
 }
 export interface UpdateMethods {
-  power: (q: number) => ISingleHeroStats
-  stamina: (q: number) => ISingleHeroStats
-  health: (q: number) => ISingleHeroStats
-  movement: (q: number) => ISingleHeroStats
-  defense: (q: number) => ISingleHeroStats
-  position: (pos: number[]) => ISingleHeroStats
+  power: (q: number) => void
+  stamina: (q: number) => void
+  health: (q: number) => void
+  movement: (q: number) => void
+  defense: (q: number) => void
+  position: (pos: number[] | undefined) => void
 }
 
 type Context = {
@@ -55,8 +55,8 @@ type Context = {
   startGame: () => void
   heroStatus: IHeroStatus | undefined
   setHeroStatus: Dispatch<SetStateAction<IHeroStatus | undefined>>
-  updateStatusOfHero: (
-    updatedHero: ISingleHeroStats,
+  updateStatusOfHeroes: (
+    heroesUpdated: ISingleHeroStats[],
     heroStatus: IHeroStatus,
   ) => void
   // square selection
@@ -84,6 +84,10 @@ type Context = {
   updateHero: (hero: ISingleHeroStats) => UpdateMethods
   historical: string[] | undefined
   log: (log: string) => void
+  refetchStatus: () => IHeroStatus | undefined
+  winner: 1 | 2 | undefined
+  setWinner: Dispatch<SetStateAction<1 | 2 | undefined>>
+  resetGame: () => void
 }
 const BoardContext = createContext<Context | undefined>(undefined)
 
@@ -110,6 +114,7 @@ export const BoardProvider: FC<Props> = ({ children }) => {
     undefined,
   )
   const [historical, setHistorical] = useState<string[]>()
+  const [winner, setWinner] = useState<1 | 2 | undefined>()
 
   const removeSelection = () => setSquareSelected([0, 0])
   const selectSquare = (position: IPosition) => {
@@ -129,14 +134,15 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   // MOVEMENT
 
   const showMoveOptions = (hero: ISingleHeroStats) => {
-    resetOptions()
+    hero.position && resetOptions()
     setActiveAction('move')
     const moveRange = hero.hero.movement
 
     const moveRangeArray = Array.from({ length: moveRange })
     const newPositions = moveRangeArray.reduce(
       (acc: IOptions, v, i) => {
-        const [x, y] = hero.position
+        const x = hero.position ? hero.position[0] : 0
+        const y = hero.position ? hero.position[1] : 0
         const up: IPosition = [x, y + i]
         const bottom: IPosition = [x, y - i]
         const left: IPosition = [x - i, y]
@@ -196,13 +202,18 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   // ATTACK
 
   const showAttackOptions = (hero: ISingleHeroStats) => {
+    if (hero.position === undefined) {
+      return
+    }
     resetOptions()
     setActiveAction('attack')
     const attackRange = 1
+
     const newOptions = Array.from({ length: attackRange }).reduce(
       (acc: IPosition[], v, i) => {
         i += 1
-        const [x, y] = hero.position
+        const x = hero.position ? hero.position[0] : 0
+        const y = hero.position ? hero.position[1] : 0
 
         const up = [x, y + i]
         const down = [x, y - i]
@@ -226,7 +237,6 @@ export const BoardProvider: FC<Props> = ({ children }) => {
       },
       [] as IPosition[],
     )
-
     setAttackOptions(newOptions)
   }
   const selectHero = (hero?: ISingleHeroStats) => {
@@ -290,49 +300,83 @@ export const BoardProvider: FC<Props> = ({ children }) => {
       },
     })
   }
-  const updateStatusOfHero = (
-    heroUpdated: ISingleHeroStats,
+  const updateStatusOfHeroes = (
+    heroesUpdated: ISingleHeroStats[],
     heroStatus: IHeroStatus,
   ) => {
-    const updatedStatus = produce(heroStatus, (draft) => {
-      if (heroStatus && draft) {
-        draft[`player${heroUpdated.player}`][`hero${heroUpdated.id}`] =
-          heroUpdated
-      }
+    heroesUpdated.forEach((heroUpdated) => {
+      const updatedStatus = produce(heroStatus, (draft) => {
+        if (heroStatus && draft) {
+          draft[`player${heroUpdated.player}`][`hero${heroUpdated.id}`] =
+            heroUpdated
+        }
+      })
+      setHeroStatus(updatedStatus)
     })
-    setHeroStatus(updatedStatus)
   }
   const updateHero = (hero: ISingleHeroStats): UpdateMethods => {
     const updateStat = (stat: Stats, q: number) => {
       const heroUpdated = produce(hero, (draft) => {
         draft.hero[stat] = draft.hero[stat] + q
       })
-      return heroUpdated
+      heroStatus && updateStatusOfHeroes([heroUpdated], heroStatus)
     }
-    const updatePos = (pos: number[]) => {
+    const updatePos = (pos: number[] | undefined) => {
       const heroUpdated = produce(hero, (draft) => {
         draft.position = pos
       })
-      return heroUpdated
+      if (!heroStatus) {
+        return undefined
+      }
+      updateStatusOfHeroes([heroUpdated], heroStatus)
     }
     const methods: UpdateMethods = {
-      power: (q: number) => updateStat(Stats.POWER, q),
-      stamina: (q: number) => updateStat(Stats.STAMINA, q),
-      health: (q: number) => updateStat(Stats.HEALTH, q),
-      movement: (q: number) => updateStat(Stats.MOVEMENT, q),
-      defense: (q: number) => updateStat(Stats.DEFENSE, q),
-      position: (pos: number[]) => updatePos(pos),
+      power: (q) => updateStat(Stats.POWER, q),
+      stamina: (q) => updateStat(Stats.STAMINA, q),
+      health: (q) => updateStat(Stats.HEALTH, q),
+      movement: (q) => updateStat(Stats.MOVEMENT, q),
+      defense: (q) => updateStat(Stats.DEFENSE, q),
+      position: (pos) => updatePos(pos),
     }
     return methods
   }
   const log = (str: string) => {
     historical ? setHistorical([str, ...historical]) : setHistorical([str])
   }
+  const refetchStatus = () => heroStatus
+  const resetGame = () => {
+    setHeroStatus(undefined)
+    setHeroSelected(undefined)
+    setHistorical(undefined)
+    setPlayer1heroes([])
+    setPlayer2heroes([])
+  }
   useEffect(() => {
     removeMoveOptions()
     removeAttackOptions()
   }, [heroSelected])
+  useEffect(() => {
+    if (!heroStatus) {
+      return
+    }
+    const player1heroes = Object.entries(heroStatus.player1).map(
+      ([, hero]) => hero,
+    )
+    const player2heroes = Object.entries(heroStatus.player2).map(
+      ([, hero]) => hero,
+    )
 
+    if (player1heroes.every((hero) => hero.hero.health <= 0)) {
+      setWinner(2)
+      setInGame(false)
+      resetGame()
+    }
+    if (player2heroes.every((hero) => hero.hero.health <= 0)) {
+      setWinner(1)
+      setInGame(false)
+      resetGame()
+    }
+  }, [heroStatus])
   return (
     <BoardContext.Provider
       value={{
@@ -370,9 +414,13 @@ export const BoardProvider: FC<Props> = ({ children }) => {
 
         activeAction,
         updateHero,
-        updateStatusOfHero,
+        updateStatusOfHeroes,
         historical,
         log,
+        refetchStatus,
+        winner,
+        setWinner,
+        resetGame,
       }}
     >
       {children}

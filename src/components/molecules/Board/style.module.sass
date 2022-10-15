@@ -1,18 +1,23 @@
 $t1 : #ff6f00
 $t2 : #0077ff
-$shadowOffset : 4px
-$negSO: -4px
+$shadowOffset : .4rem
+$negSO: -.4rem
 
 .boardContainer
   position: relative
-  width: 50vw
-  height: 50vh
   display: flex
   justify-content: left
   flex-wrap: wrap
   gap: 0px 0px
   align-content: flex-start
-  border-radius: 20px
-  border-left: 3px solid $t1 
-  border-right: 3px solid $t2
+  border-radius: .2rem
+  border-left: .1rem solid $t1 
+  border-right: .1rem solid $t2
   box-shadow:  $shadowOffset $shadowOffset 20px $t2, $negSO $negSO 20px $t1
+  width: 25rem
+  height: 25rem
+  @media screen and (min-width: 768px) 
+    scale: 1.2
+  @media screen and (min-width: 1080px) 
+    scale: 2
+  

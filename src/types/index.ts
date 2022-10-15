@@ -19,10 +19,10 @@ export interface IHero {
   defense: number
 }
 export type IHeroes = IHero[]
-export type IPosition = number[]
+export type IPosition = number[] | undefined
 export type ISingleHeroStats = {
   hero: IHero
-  position: IPosition
+  position: IPosition | undefined
   player: 1 | 2
   id: 1 | 2 | 3
 }

@@ -1,44 +1,84 @@
 .statsContainer 
-  height: 250px
-  width: 300px
-  background: lightgray
+
+  background: rgba(0,0,0,.2)
   position: fixed
-  top: 0
-  right: 0
-  padding: 0 20px
-  > div > p
-    line-height: .5em
-  > .playerContainer
-      background: rgba(0,0,0,.2)
-      margin-bottom: 1px
-  
+  top: 20px
+  right: 20px
+  padding: 20px
+.statsTitle
+    color: #ddd
+    width: 100%
+    text-align: center
+.playerContainer
+  margin-bottom: 10px
+  border-radius: 4px
+  padding: 8px
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-direction: column
+.team1
+    border-bottom: 1px solid #ff6f00
+    border-right: 1px solid #ff6f00
+.team2
+    border-bottom: 1px solid #0077ff
+    border-right: 1px solid #0077ff
 
 .statsNumberContainer
-  outline: 2px solid black
+  position: relative
+  border-bottom: 2px solid #555
+  border-right: 2px solid #bbb
   border-radius: 8px
   overflow: hidden
-  padding: 4px 0
+  width: 200px
+  display: flex
+  align-items: center
+  justify-content: center
+  > span
+    font-size: 14px
+    display: flex
+    align-items: center
+    justify-content: center
+    text-shadow: 2px 2px 4px gray
 .health 
- background: green
+ background: linear-gradient(190deg, #5cde92, green)
  padding: 4px
+ width: 25%
   
 .stamina 
- background: yellow
+ background: linear-gradient(190deg, #eaf478, yellow)
  padding: 4px
+ width: 25%
 
 .power 
- background: red
+ background: linear-gradient(190deg, #f34d4d, #f22323)
  padding: 4px
- color: white
+ width: 25%
   
 .defense 
- background: blue
+ background: linear-gradient(190deg, #6e9ff2, #238bf2)
  padding: 4px
- color: white
+ width: 25%
 
 .heroContainer
+  width: 100%
   display: flex
-  justify-content: space-between
+  justify-content: flex-start
+  align-items: center
+  flex-direction: column
+  margin-bottom: 4px
+  background: rgba(255,255,255,.1)
+  padding: 8px
+
+  
   &.dead
-    background: darkgray
+    background: rgba(150,0,0,.2)
     color: darkred
+.heroName
+  color: white
+  font-size: 12px
+  &.dead
+    text-decoration: line-through
+    color: red
+    text-align: center
+    width: 100%

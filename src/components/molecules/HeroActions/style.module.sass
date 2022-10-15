@@ -1,18 +1,21 @@
 .heroActions_Container
   display: none
   position: absolute
-  height: 50px
-  width: 50px
-  top: 5px
-  left: -40px
+  height: 100%
+  width: 100%
+  top: 0
+  left: 0
   z-index: 1
   border-radius: 8px
   gap: 5px
+  @media screen and (min-width: 768px) 
+    scale: 1.2
+  @media screen and (min-width: 1080px) 
+    scale: 2
   &.selected
     display: flex
     align-items: center
     justify-content: center
     flex-direction: column
     padding: 5px
-  &.invert
-    left: 60px
+

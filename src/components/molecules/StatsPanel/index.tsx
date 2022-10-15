@@ -3,6 +3,47 @@ import s from './style.module.sass'
 import React from 'react'
 import classNames from 'classnames'
 import { formatName } from '../../../utils'
+import { IHeroStatus } from '../../../types'
+const SingleHeroPanel = ({
+  heroStatus,
+  handleFieldChange,
+  player,
+  hero,
+}: {
+  heroStatus: IHeroStatus
+  handleFieldChange: (e: React.ChangeEvent<HTMLSpanElement>) => void
+  player: 1 | 2
+  hero: 1 | 2 | 3
+}) => {
+  const heroSelected = heroStatus?.[`player${player}`]?.[`hero${hero}`]
+  const isDead = heroSelected?.hero.health <= 0
+  if (!heroStatus) {
+    return null
+  }
+  return (
+    <div className={classNames(s.heroContainer, isDead && s.dead)}>
+      <p className={classNames(s.heroName, isDead && s.dead)}>
+        {formatName(heroSelected.hero.name)}
+      </p>
+      {!isDead && (
+        <div className={s.statsNumberContainer}>
+          <span className={s.health} onChange={handleFieldChange}>
+            {heroSelected?.hero.health}
+          </span>
+          <span className={s.stamina} onChange={handleFieldChange}>
+            {heroSelected?.hero.stamina}
+          </span>
+          <span className={s.power} onChange={handleFieldChange}>
+            {heroSelected?.hero.power}
+          </span>
+          <span className={s.defense} onChange={handleFieldChange}>
+            {heroSelected?.hero.defense}
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
 export const StatsPanel = () => {
   const { heroStatus } = useBoard()
   const handleFieldChange = (e: React.ChangeEvent<HTMLSpanElement>) => {
@@ -12,128 +53,50 @@ export const StatsPanel = () => {
       e.target.style.color = currentColor
     }, 2000)
   }
-  const heroContainerClass = (health?: number) =>
-    classNames(s.heroContainer, health && health <= 0 && s.dead)
+  if (!heroStatus) {
+    return null
+  }
   return (
     <div className={s.statsContainer}>
-      <h4>Stats</h4>
-      <div className={s.playerContainer}>
-        <p
-          className={heroContainerClass(heroStatus?.player1.hero1.hero.health)}
-        >
-          {heroStatus && formatName(heroStatus?.player1.hero1.hero.name)}
-          <div className={s.statsNumberContainer}>
-            <span className={s.health} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero1.hero.health}
-            </span>
-            <span className={s.stamina} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero1.hero.stamina}
-            </span>
-            <span className={s.power} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero1.hero.power}
-            </span>
-            <span className={s.defense} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero1.hero.defense}
-            </span>
-          </div>
-        </p>
-        <p
-          className={heroContainerClass(heroStatus?.player1.hero2.hero.health)}
-        >
-          {heroStatus && formatName(heroStatus?.player1.hero2.hero.name)}
-          <div className={s.statsNumberContainer}>
-            <span className={s.health} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero2.hero.health}
-            </span>
-            <span className={s.stamina} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero2.hero.stamina}
-            </span>
-            <span className={s.power} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero2.hero.power}
-            </span>
-            <span className={s.defense} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero2.hero.defense}
-            </span>
-          </div>
-        </p>
-        <p
-          className={heroContainerClass(heroStatus?.player1.hero3.hero.health)}
-        >
-          {heroStatus && formatName(heroStatus?.player1.hero3.hero.name)}
-          <div className={s.statsNumberContainer}>
-            <span className={s.health} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero3.hero.health}
-            </span>
-            <span className={s.stamina}>
-              {heroStatus?.player1.hero3.hero.stamina}
-            </span>
-            <span className={s.power} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero3.hero.power}
-            </span>
-            <span className={s.defense} onChange={handleFieldChange}>
-              {heroStatus?.player1.hero3.hero.defense}
-            </span>
-          </div>
-        </p>
+      <div className={classNames(s.playerContainer, s.team1)}>
+        <SingleHeroPanel
+          heroStatus={heroStatus}
+          handleFieldChange={handleFieldChange}
+          player={1}
+          hero={1}
+        />
+        <SingleHeroPanel
+          heroStatus={heroStatus}
+          handleFieldChange={handleFieldChange}
+          player={1}
+          hero={2}
+        />
+        <SingleHeroPanel
+          heroStatus={heroStatus}
+          handleFieldChange={handleFieldChange}
+          player={1}
+          hero={3}
+        />
       </div>
-      <div className={s.playerContainer}>
-        <p
-          className={heroContainerClass(heroStatus?.player2.hero1.hero.health)}
-        >
-          {heroStatus && formatName(heroStatus?.player2.hero1.hero.name)}
-          <div className={s.statsNumberContainer}>
-            <span className={s.health}>
-              {heroStatus?.player2.hero1.hero.health}
-            </span>
-            <span className={s.stamina}>
-              {heroStatus?.player2.hero1.hero.stamina}
-            </span>
-            <span className={s.power}>
-              {heroStatus?.player2.hero1.hero.power}
-            </span>
-            <span className={s.defense}>
-              {heroStatus?.player2.hero1.hero.defense}
-            </span>
-          </div>
-        </p>
-        <p
-          className={heroContainerClass(heroStatus?.player2.hero2.hero.health)}
-        >
-          {heroStatus && formatName(heroStatus?.player2.hero2.hero.name)}
-          <div className={s.statsNumberContainer}>
-            <span className={s.health}>
-              {heroStatus?.player2.hero2.hero.health}
-            </span>
-            <span className={s.stamina}>
-              {heroStatus?.player2.hero2.hero.stamina}
-            </span>
-            <span className={s.power}>
-              {heroStatus?.player2.hero2.hero.power}
-            </span>
-            <span className={s.defense}>
-              {heroStatus?.player2.hero2.hero.defense}
-            </span>
-          </div>
-        </p>
-        <p
-          className={heroContainerClass(heroStatus?.player2.hero3.hero.health)}
-        >
-          {heroStatus && formatName(heroStatus?.player2.hero3.hero.name)}
-          <div className={s.statsNumberContainer}>
-            <span className={s.health}>
-              {heroStatus?.player2.hero3.hero.health}
-            </span>
-            <span className={s.stamina}>
-              {heroStatus?.player2.hero3.hero.stamina}
-            </span>
-            <span className={s.power}>
-              {heroStatus?.player2.hero3.hero.power}
-            </span>
-            <span className={s.defense}>
-              {heroStatus?.player2.hero3.hero.defense}
-            </span>
-          </div>
-        </p>
+      <div className={classNames(s.playerContainer, s.team2)}>
+        <SingleHeroPanel
+          heroStatus={heroStatus}
+          handleFieldChange={handleFieldChange}
+          player={2}
+          hero={1}
+        />
+        <SingleHeroPanel
+          heroStatus={heroStatus}
+          handleFieldChange={handleFieldChange}
+          player={2}
+          hero={2}
+        />
+        <SingleHeroPanel
+          heroStatus={heroStatus}
+          handleFieldChange={handleFieldChange}
+          player={2}
+          hero={3}
+        />
       </div>
     </div>
   )

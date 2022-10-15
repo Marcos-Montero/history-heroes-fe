@@ -14,27 +14,48 @@ export const HeroFigure = ({
   selected: boolean
   attackable: boolean
 }) => {
-  const { heroSelected, updateHero, updateStatusOfHero, heroStatus, log } =
-    useBoard()
-  const handleAttack = () => {
-    if (heroSelected) {
-      const attackantMinusStamina = updateHero(heroSelected).stamina(-100)
-      const damageCalc = (attack: number, defense: number) => {
-        const randomDice = parseInt((Math.random() * 400).toFixed(0))
-        const totalAttack = attack + randomDice - defense
-        log(
-          `${formatName(heroSelected.hero.name)} [⚔️${
-            totalAttack >= 0 ? totalAttack : 0
-          }] ${formatName(hero.hero.name)} (🔀 ${randomDice})`,
-        )
-        return totalAttack >= 0 ? totalAttack : 0
-      }
-      const totalDamage = damageCalc(
-        attackantMinusStamina.hero.power,
-        hero.hero.defense,
+  const { log, heroSelected, updateHero } = useBoard()
+
+  const substractStamina = () => {
+    if (!heroSelected) {
+      return
+    }
+    return updateHero(heroSelected).stamina(-100)
+  }
+  const substractHealth = () => {
+    if (!heroSelected) {
+      return
+    }
+    const damageCalc = (attack: number, defense: number) => {
+      const randomDice = parseInt((Math.random() * 400).toFixed(0))
+      const totalAttack = attack + randomDice - defense
+      log(
+        `${formatName(heroSelected.hero.name)} [⚔️${
+          totalAttack >= 0 ? totalAttack : 0
+        }] ${formatName(hero.hero.name)} (🔀 ${randomDice})`,
       )
-      const receiverMinusHealth = updateHero(hero).health(-totalDamage)
-      heroStatus && updateStatusOfHero(receiverMinusHealth, heroStatus)
+      return totalAttack >= 0 ? totalAttack : 0
+    }
+    const totalDamage = damageCalc(heroSelected.hero.power, hero.hero.defense)
+    return updateHero(hero).health(-totalDamage)
+  }
+
+  const doNothing = () => {
+    if (!heroSelected) {
+      return
+    }
+    log(
+      `${formatName(
+        heroSelected.hero.name,
+      )} doesn't have enough stamina to perform this action`,
+    )
+  }
+  const handleAttack = () => {
+    if (heroSelected && heroSelected.hero.stamina >= 100) {
+      substractStamina()
+      substractHealth()
+    } else if (heroSelected) {
+      doNothing()
     }
   }
   return (

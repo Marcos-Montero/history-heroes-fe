@@ -1,5 +1,6 @@
 import { HQ1, HQ2, wall1, wall2 } from '../constants/board'
 import {
+  IHero,
   IHeroStatus,
   IHQ,
   IOccupant,
@@ -20,20 +21,21 @@ export const does = (
   }
   return methods
 }
-export const selectRandomly = (arr: any[]) =>
-  parseInt((Math.random() * (arr.length - 1)).toFixed(0))
+export const selectRandomly = (length: number) =>
+  parseInt((Math.random() * (length - 1)).toFixed(0))
 
-export const buildTriplet = (arr: any[], triplet: number[] = []) => {
-  const randomSelection: number = selectRandomly(arr)
-  if (!triplet.includes(randomSelection)) {
-    triplet.push(randomSelection)
-  }
-  if (!triplet.includes(randomSelection)) {
-    if (triplet.length < 3) {
-      buildTriplet(triplet, arr)
-    }
-  }
-  return triplet
+export const buildTriplet = (heroes: IHero[]) => {
+  const newHeroIndex1 = selectRandomly(heroes.length)
+  const newHeroIndex2 = selectRandomly(heroes.length - 1)
+  const newHeroIndex3 = selectRandomly(heroes.length - 2)
+
+  const newHero1 = heroes[newHeroIndex1]
+  let rest = heroes.filter((value, i) => i !== newHeroIndex1)
+  const newHero2 = rest[newHeroIndex2]
+  rest = rest.filter((v, i) => i !== newHeroIndex2)
+  const newHero3 = rest[newHeroIndex3]
+  rest = rest.filter((v, i) => i !== newHeroIndex3)
+  return { triplet: [newHero1, newHero2, newHero3], rest }
 }
 export const formatName = (rawName: string) => {
   const separatedWords = rawName.split('_')
@@ -74,10 +76,14 @@ export const isOccupied = (
       ([key, playerHeroes]: [string, IHeroStatus]) => {
         Object.entries(playerHeroes).forEach(
           ([k, hero]: [string, ISingleHeroStats]): void => {
-            if (checkIfPos(hero.position).equals([position[0], position[1]])) {
-              result = {
-                value: true,
-                occupant: hero,
+            if (hero.position && position) {
+              if (
+                checkIfPos(hero.position).equals([position[0], position[1]])
+              ) {
+                result = {
+                  value: true,
+                  occupant: hero,
+                }
               }
             }
           },
@@ -89,6 +95,9 @@ export const isOccupied = (
 }
 
 export const isHQ = (position: IPosition): IHQ => {
+  if (!position) {
+    return { value: false, hq: undefined }
+  }
   const isHQ1 = position === HQ1 ? 1 : undefined
   const isHQ2 = position === HQ2 ? 2 : undefined
   return {

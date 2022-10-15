@@ -20,7 +20,6 @@ export const Square = ({ position }: Props) => {
     attackOptions,
     updateHero,
     heroStatus,
-    updateStatusOfHero,
     log,
   } = useBoard()
   const isHQ1 = position[0] === 7 && position[1] === 1
@@ -36,26 +35,44 @@ export const Square = ({ position }: Props) => {
           heroSelected.position
         } ⏩ ${position}`,
       )
-      const movedHero = updateHero(heroSelected).position(position)
-      heroStatus && updateStatusOfHero(movedHero, heroStatus)
+      updateHero(heroSelected).position(position)
     }
-
-    selectSquare(position)
+    /*   selectSquare(position)
     if (!occupant) selectHero(undefined)
     if (occupant) {
       selectHero(occupant)
+    } */
+  }
+  const getHeroWithMostStamina = () => {
+    if (!heroStatus) {
+      return
     }
+    const heroes = [
+      ...Object.entries(heroStatus.player1).map(([, hero]) => hero),
+      ...Object.entries(heroStatus.player2).map(([, hero]) => hero),
+    ]
+    const orderByStamina = (a: ISingleHeroStats, b: ISingleHeroStats) =>
+      a?.hero?.stamina - b?.hero?.stamina
+    const heroWithMostStamina = heroes.sort(orderByStamina)[0]
+    return heroWithMostStamina
   }
   useEffect(() => {
     setOccupant(undefined)
     const { occupant } = isOccupied(position, heroStatus)
-    occupant && occupant?.hero.health > 0 && setOccupant(occupant)
+    if (occupant && getHeroWithMostStamina() === occupant) {
+      selectSquare(position)
+      selectHero(occupant)
+    }
+    if (occupant && occupant?.hero.health > 0) {
+      setOccupant(occupant)
+    } else if (occupant) {
+      log(`💀 ${formatName(occupant.hero.name)} died !`)
+    }
   }, [heroStatus])
   const squareStyle = classNames(
     s.square,
     squareSelected === position && s.selected,
-    isHQ1 && s.hq1,
-    isHQ2 && s.hq2,
+
     isWall1 && s.wall1,
     isWall2 && s.wall2,
     moveOptions &&
@@ -90,8 +107,8 @@ export const Square = ({ position }: Props) => {
           selected={heroSelected === occupant}
         />
       )}
-      {isHQ1 && <h3>HQ1</h3>}
-      {isHQ2 && <h3>HQ2</h3>}
+      {isHQ1 && <Svg name="hq1" width={50} height={50} />}
+      {isHQ2 && <Svg name="hq2" width={50} height={50} />}
     </div>
   )
 }

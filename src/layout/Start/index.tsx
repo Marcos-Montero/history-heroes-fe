@@ -23,12 +23,12 @@ export const Start = () => {
     player2heroes,
     setPlayer1heroes,
     setPlayer2heroes,
+    resetGame,
   } = useBoard()
   const [selectingPlayer, setSelectingPlayer] = useState(1)
   const [availableHeroes, setAvailableHeroes] = useState<IHero[]>(
     Object.entries(heroes).map(([k, v]) => v),
   )
-  const [allHeroesSelected, setAllHeroesSelected] = useState(false)
   const resetAvailableHeroes = () => {
     setAvailableHeroes(Object.entries(heroes).map(([k, v]) => v))
   }
@@ -39,9 +39,6 @@ export const Start = () => {
   const handleConfirmTeam = () => {
     if (selectingPlayer === 1) {
       changeToPlayer2()
-    }
-    if (selectingPlayer === 2) {
-      setAllHeroesSelected(true)
     }
   }
   const addHeroToMyTeam = (hero: IHero) => {
@@ -57,26 +54,14 @@ export const Start = () => {
   }
   const generateTeams = () => {
     const heroValues = Object.values(heroes)
-    const randomTriplet1 = buildTriplet(heroValues)
-    const randomTriplet2 = buildTriplet(heroValues)
-
-    const randomTeam1 = [
-      heroValues[randomTriplet1[0]],
-      heroValues[randomTriplet1[1]],
-      heroValues[randomTriplet1[2]],
-    ]
-    const randomTeam2 = [
-      heroValues[randomTriplet2[0]],
-      heroValues[randomTriplet2[1]],
-      heroValues[randomTriplet2[2]],
-    ]
+    const randomTeam1 = buildTriplet(heroValues)
+    const randomTeam2 = buildTriplet(randomTeam1.rest)
     return [randomTeam1, randomTeam2]
   }
   const randomPick = () => {
     const [randomTeam1, randomTeam2] = generateTeams()
-    setPlayer1heroes(randomTeam1)
-    setPlayer2heroes(randomTeam2)
-    setAllHeroesSelected(true)
+    setPlayer1heroes(randomTeam1.triplet)
+    setPlayer2heroes(randomTeam2.triplet)
   }
   const handleCardClick = (v: IHero) => {
     if (does(player1heroes).contain(v)) {
@@ -85,7 +70,8 @@ export const Start = () => {
       addHeroToMyTeam(v)
     }
   }
-
+  const allHeroesSelected =
+    player1heroes.length === 3 && player2heroes.length === 3
   return (
     <StartContainer>
       {!allHeroesSelected ? (
@@ -135,6 +121,7 @@ export const Start = () => {
             })}
           </FinalCardsContainer>
           <StartButton onClick={() => startGame()}>Start Game</StartButton>
+          <button onClick={resetGame}>⬅️Pick again</button>
         </>
       )}
     </StartContainer>
