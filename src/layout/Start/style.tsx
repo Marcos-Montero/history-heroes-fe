@@ -9,10 +9,49 @@ export const StartContainer = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+  animation: grow ease 0.6s;
   h1 {
     font-size: 50px;
     color: #ccc;
     margin: 10px;
+  }
+  @keyframes grow {
+    0% {
+      scale: 0;
+    }
+    70% {
+      scale: 1.2;
+    }
+    100% {
+      scale: 1;
+    }
+  }
+`
+export const FinalContainer = styled.div`
+  width: 100%;
+  max-width: 1080px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  animation: grow ease 0.6s;
+  h1 {
+    font-size: 50px;
+    color: #ccc;
+    margin: 10px;
+  }
+  @keyframes grow {
+    0% {
+      scale: 0;
+    }
+    70% {
+      scale: 1.2;
+    }
+    100% {
+      scale: 1;
+    }
   }
 `
 export const PickableContainer = styled.div`
@@ -39,7 +78,7 @@ export const ConfirmButton = styled.button`
   transition: 0.3s;
   cursor: pointer;
   :hover {
-    transform: scale(1.1);
+    scale: 1.1;
   }
 `
 export const RandomButton = styled.button`
@@ -81,20 +120,13 @@ export const RandomButton = styled.button`
     );
   }
 `
-export const FinalContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  gap: 20px;
-  background: yellow;
-  h1 {
-    color: #eee;
-  }
-`
 export const StartButton = styled(ConfirmButton)`
-  background: orange;
+  background: linear-gradient(orange, #ff8000);
+`
+export const ResetButton = styled(ConfirmButton)`
+  background: linear-gradient(gray, white);
+  font-size: 12px;
+  padding: 5px;
 `
 export const FinalCardsContainer = styled.div`
   background: rgba(0, 0, 0, 0.2);

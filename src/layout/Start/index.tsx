@@ -8,8 +8,10 @@ import { buildTriplet, does } from '../../utils'
 import {
   ConfirmButton,
   FinalCardsContainer,
+  FinalContainer,
   PickableContainer,
   RandomButton,
+  ResetButton,
   StartButton,
   StartContainer,
 } from './style'
@@ -70,6 +72,10 @@ export const Start = () => {
       addHeroToMyTeam(v)
     }
   }
+  const handleReset = () => {
+    setSelectingPlayer(1)
+    resetGame()
+  }
   const allHeroesSelected =
     player1heroes.length === 3 && player2heroes.length === 3
   return (
@@ -94,19 +100,18 @@ export const Start = () => {
               )
             })}
           </PickableContainer>
-          <ConfirmButton
-            onClick={handleConfirmTeam}
-            disabled={
-              (selectingPlayer === 1 && player1heroes.length !== 3) ||
-              (selectingPlayer === 2 && player2heroes.length !== 3)
-            }
-          >
-            Confirm Team
-          </ConfirmButton>
+          {selectingPlayer === 1 && (
+            <ConfirmButton
+              onClick={handleConfirmTeam}
+              disabled={selectingPlayer === 1 && player1heroes.length !== 3}
+            >
+              Confirm Team
+            </ConfirmButton>
+          )}
           <RandomButton onClick={randomPick}>(?) Random Picks (?)</RandomButton>
         </>
       ) : (
-        <>
+        <FinalContainer>
           <h1>These are the Heroes Selected:</h1>
           <FinalCardsContainer>
             <h1>Player 1: </h1>
@@ -121,8 +126,8 @@ export const Start = () => {
             })}
           </FinalCardsContainer>
           <StartButton onClick={() => startGame()}>Start Game</StartButton>
-          <button onClick={resetGame}>⬅️Pick again</button>
-        </>
+          <ResetButton onClick={handleReset}>⬅️Pick again</ResetButton>
+        </FinalContainer>
       )}
     </StartContainer>
   )

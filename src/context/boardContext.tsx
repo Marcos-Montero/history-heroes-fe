@@ -355,6 +355,11 @@ export const BoardProvider: FC<Props> = ({ children }) => {
     removeMoveOptions()
     removeAttackOptions()
   }, [heroSelected])
+  const win = (p: 1 | 2) => {
+    setWinner(p)
+    setInGame(false)
+    resetGame()
+  }
   useEffect(() => {
     if (!heroStatus) {
       return
@@ -367,14 +372,14 @@ export const BoardProvider: FC<Props> = ({ children }) => {
     )
 
     if (player1heroes.every((hero) => hero.hero.health <= 0)) {
-      setWinner(2)
-      setInGame(false)
-      resetGame()
+      setTimeout(() => {
+        win(2)
+      }, 500)
     }
     if (player2heroes.every((hero) => hero.hero.health <= 0)) {
-      setWinner(1)
-      setInGame(false)
-      resetGame()
+      setTimeout(() => {
+        win(1)
+      }, 500)
     }
   }, [heroStatus])
   return (

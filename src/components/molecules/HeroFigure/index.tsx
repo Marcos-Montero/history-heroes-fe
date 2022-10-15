@@ -64,11 +64,6 @@ export const HeroFigure = ({
       onClick={attackable ? handleAttack : () => {}}
     >
       <HeroActions selected={selected} />
-      {attackable && (
-        <div className={s.attackable}>
-          <Svg name="attack" width={40} height={40} fill="red" />
-        </div>
-      )}
       <div
         className={classNames(
           s.frameHero,
@@ -76,6 +71,11 @@ export const HeroFigure = ({
           selected && s.selected,
         )}
       >
+        {attackable && (
+          <div className={s.attackable}>
+            <Svg name="attack" width={'60%'} height={'60%'} fill="red" />
+          </div>
+        )}
         <Svg name={hero.hero.name} />
       </div>
     </button>
