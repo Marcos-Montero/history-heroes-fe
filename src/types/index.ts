@@ -26,7 +26,14 @@ export type ISingleHeroStats = {
   player: 1 | 2
   id: 1 | 2 | 3
 }
+export interface IHQStats {
+  health: number
+  position: IPosition | undefined
+  player: 1 | 2
+}
 export interface IHeroStatus {
+  hq1: IHQStats
+  hq2: IHQStats
   player1: {
     hero1: ISingleHeroStats
     hero2: ISingleHeroStats

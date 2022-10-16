@@ -1,9 +1,11 @@
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
+import { HQ1, HQ2 } from '../../../constants/board'
 import { useBoard } from '../../../context/boardContext'
 import { Svg } from '../../../svg'
 import { ISingleHeroStats } from '../../../types'
 import { does, formatName, isOccupied, isWall } from '../../../utils'
+import { StatusBar } from '../../atoms/StatusBar'
 import { HeroFigure } from '../HeroFigure'
 import s from './style.module.sass'
 type Props = {
@@ -21,6 +23,7 @@ export const Square = ({ position }: Props) => {
     updateHero,
     heroStatus,
     log,
+    updateHQ,
   } = useBoard()
   const isHQ1 = position[0] === 7 && position[1] === 1
   const isHQ2 = position[0] === 1 && position[1] === 7
@@ -37,11 +40,6 @@ export const Square = ({ position }: Props) => {
       )
       updateHero(heroSelected).position(position)
     }
-    /*   selectSquare(position)
-    if (!occupant) selectHero(undefined)
-    if (occupant) {
-      selectHero(occupant)
-    } */
   }
   const getHeroWithMostStamina = () => {
     if (!heroStatus) {
@@ -84,6 +82,58 @@ export const Square = ({ position }: Props) => {
       does(attackOptions).contain(position) &&
       s.attackOption,
   )
+  const substractStamina = () => {
+    if (!heroSelected) {
+      return
+    }
+    return updateHero(heroSelected).stamina(-100)
+  }
+  const substractHQHealth = () => {
+    if (!heroSelected) {
+      return
+    }
+    if (!(isHQ1 || isHQ2)) {
+      return
+    }
+    const hq = isHQ1 ? heroStatus?.hq1 : heroStatus?.hq2
+    if (!hq) {
+      return
+    }
+    const damageCalc = (attack: number) => {
+      if (!heroSelected) {
+        return
+      }
+      const randomDice = parseInt((Math.random() * 400).toFixed(0))
+      const totalAttack = attack + randomDice
+      log(
+        `${formatName(heroSelected?.hero?.name)} [⚔️${
+          totalAttack >= 0 ? totalAttack : 0
+        }] HQ-${hq.player} (🔀 ${randomDice})`,
+      )
+      return totalAttack >= 0 ? totalAttack : 0
+    }
+    const totalDamage = damageCalc(heroSelected.hero.power)
+    return hq && totalDamage && updateHQ(hq, -totalDamage)
+  }
+
+  const doNothing = () => {
+    if (!heroSelected) {
+      return
+    }
+    log(
+      `${formatName(
+        heroSelected.hero.name,
+      )} doesn't have enough stamina to perform this action`,
+    )
+  }
+  const handleAttackHQ = () => {
+    if (heroSelected && heroSelected.hero.stamina >= 100) {
+      substractStamina()
+      substractHQHealth()
+    } else if (heroSelected) {
+      doNothing()
+    }
+  }
   return (
     <div className={squareStyle} onClick={handleSquareClick}>
       {isWall(position).value && (
@@ -107,8 +157,36 @@ export const Square = ({ position }: Props) => {
           selected={heroSelected === occupant}
         />
       )}
-      {isHQ1 && <Svg name="hq1" width={50} height={50} />}
-      {isHQ2 && <Svg name="hq2" width={50} height={50} />}
+      {(isHQ1 || isHQ2) &&
+        attackOptions &&
+        does(attackOptions).contain(position) && (
+          <div
+            className={s.attackable}
+            onClick={
+              attackOptions && does(attackOptions).contain(position)
+                ? handleAttackHQ
+                : () => {}
+            }
+          >
+            <Svg name="attack" width={'60%'} height={'60%'} fill="red" />
+          </div>
+        )}
+      {isHQ1 && (
+        <>
+          <Svg name="hq1" width={50} height={50} />
+          <div className={s.hqHealthBar}>
+            <p className={s.hqHealth}>{heroStatus?.hq1.health}</p>
+          </div>
+        </>
+      )}
+      {isHQ2 && (
+        <>
+          <Svg name="hq2" width={50} height={50} />
+          <div className={s.hqHealthBar}>
+            <p className={s.hqHealth}>{heroStatus?.hq2.health}</p>
+          </div>
+        </>
+      )}
     </div>
   )
 }

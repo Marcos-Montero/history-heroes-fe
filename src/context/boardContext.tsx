@@ -12,6 +12,7 @@ import {
 import {
   IHero,
   IHeroStatus,
+  IHQStats,
   IOptions,
   IPosition,
   ISingleHeroStats,
@@ -88,6 +89,7 @@ type Context = {
   winner: 1 | 2 | undefined
   setWinner: Dispatch<SetStateAction<1 | 2 | undefined>>
   resetGame: () => void
+  updateHQ: (hq: IHQStats, q: number) => void
 }
 const BoardContext = createContext<Context | undefined>(undefined)
 
@@ -258,6 +260,16 @@ export const BoardProvider: FC<Props> = ({ children }) => {
   const startGame = () => {
     setInGame(true)
     setHeroStatus({
+      hq1: {
+        health: 1000,
+        position: [7, 1],
+        player: 1,
+      },
+      hq2: {
+        health: 1000,
+        position: [1, 7],
+        player: 2,
+      },
       player1: {
         hero1: {
           hero: player1heroes[0],
@@ -314,10 +326,26 @@ export const BoardProvider: FC<Props> = ({ children }) => {
       setHeroStatus(updatedStatus)
     })
   }
+  const updateStatusOfHQ = (hqUpdated: IHQStats, heroStatus: IHeroStatus) => {
+    if (!heroStatus) {
+      return
+    }
+    const updatedStatus = produce(heroStatus, (draft) => {
+      draft[`hq${hqUpdated.player}`] = hqUpdated
+    })
+    setHeroStatus(updatedStatus)
+  }
   const updateHero = (hero: ISingleHeroStats): UpdateMethods => {
     const updateStat = (stat: Stats, q: number) => {
       const heroUpdated = produce(hero, (draft) => {
-        draft.hero[stat] = draft.hero[stat] + q
+        if (draft.hero[stat] + q > 0) {
+          draft.hero[stat] += q
+        } else {
+          draft.hero[stat] = 0
+        }
+        if (draft.hero.health === 0) {
+          draft.position = undefined
+        }
       })
       heroStatus && updateStatusOfHeroes([heroUpdated], heroStatus)
     }
@@ -339,6 +367,17 @@ export const BoardProvider: FC<Props> = ({ children }) => {
       position: (pos) => updatePos(pos),
     }
     return methods
+  }
+  const updateHQ = (hq: IHQStats, q: number) => {
+    if (!heroStatus) {
+      return
+    }
+    const updatedHQ = produce(hq, (draft) => {
+      if (draft) {
+        draft.health + q > 0 ? (draft.health += q) : (draft.health = 0)
+      }
+    })
+    updateStatusOfHQ(updatedHQ, heroStatus)
   }
   const log = (str: string) => {
     historical ? setHistorical([str, ...historical]) : setHistorical([str])
@@ -364,6 +403,8 @@ export const BoardProvider: FC<Props> = ({ children }) => {
     if (!heroStatus) {
       return
     }
+    const hq1 = heroStatus.hq1
+    const hq2 = heroStatus.hq2
     const player1heroes = Object.entries(heroStatus.player1).map(
       ([, hero]) => hero,
     )
@@ -371,12 +412,18 @@ export const BoardProvider: FC<Props> = ({ children }) => {
       ([, hero]) => hero,
     )
 
-    if (player1heroes.every((hero) => hero.hero.health <= 0)) {
+    if (
+      player1heroes.every((hero) => hero?.hero?.health <= 0) ||
+      hq1.health <= 0
+    ) {
       setTimeout(() => {
         win(2)
       }, 500)
     }
-    if (player2heroes.every((hero) => hero.hero.health <= 0)) {
+    if (
+      player2heroes.every((hero) => hero?.hero?.health <= 0) ||
+      hq2.health <= 0
+    ) {
       setTimeout(() => {
         win(1)
       }, 500)
@@ -426,6 +473,7 @@ export const BoardProvider: FC<Props> = ({ children }) => {
         winner,
         setWinner,
         resetGame,
+        updateHQ,
       }}
     >
       {children}
