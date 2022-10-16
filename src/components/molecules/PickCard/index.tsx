@@ -18,7 +18,7 @@ export const PickCard = ({
   removing,
   chosen,
 }: IPickCard) => {
-  const { role, name, health, power, stamina, movement } = hero
+  const { role, name, health, power, resources, movement } = hero
   return (
     <div
       className={classNames(
@@ -56,7 +56,7 @@ export const PickCard = ({
         <div className={s.statusContainer}>
           <StatusBar label={'health'} value={health} generic />
           <StatusBar label={'power'} value={power} generic />
-          <StatusBar label={'stamina'} value={stamina} generic />
+          <StatusBar label={'resources'} value={resources} generic />
           <StatusBar label={'movement'} value={movement} generic />
         </div>
       </div>

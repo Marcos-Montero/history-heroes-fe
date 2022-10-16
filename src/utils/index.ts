@@ -1,7 +1,7 @@
 import { HQ1, HQ2, wall1, wall2 } from '../constants/board'
 import {
   IHero,
-  IHeroStatus,
+  IMatchStatus,
   IHQ,
   IOccupant,
   IPosition,
@@ -68,12 +68,12 @@ export const isWall = (arr: number[]) => {
 }
 export const isOccupied = (
   position: IPosition,
-  heroStatus: IHeroStatus | undefined,
+  matchStatus: IMatchStatus | undefined,
 ): IOccupant => {
   let result: IOccupant = { value: false }
-  if (heroStatus) {
-    Object.entries(heroStatus).forEach(
-      ([key, playerHeroes]: [string, IHeroStatus]) => {
+  if (matchStatus) {
+    Object.entries(matchStatus).forEach(
+      ([key, playerHeroes]: [string, IMatchStatus]) => {
         Object.entries(playerHeroes).forEach(
           ([k, hero]: [string, ISingleHeroStats]): void => {
             if (hero.position && position) {

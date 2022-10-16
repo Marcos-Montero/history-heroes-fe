@@ -1,11 +1,9 @@
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
-import { HQ1, HQ2 } from '../../../constants/board'
 import { useBoard } from '../../../context/boardContext'
 import { Svg } from '../../../svg'
 import { ISingleHeroStats } from '../../../types'
 import { does, formatName, isOccupied, isWall } from '../../../utils'
-import { StatusBar } from '../../atoms/StatusBar'
 import { HeroFigure } from '../HeroFigure'
 import s from './style.module.sass'
 type Props = {
@@ -21,7 +19,7 @@ export const Square = ({ position }: Props) => {
     selectHero,
     attackOptions,
     updateHero,
-    heroStatus,
+    matchStatus,
     log,
     updateHQ,
   } = useBoard()
@@ -41,23 +39,23 @@ export const Square = ({ position }: Props) => {
       updateHero(heroSelected).position(position)
     }
   }
-  const getHeroWithMostStamina = () => {
-    if (!heroStatus) {
+  const getHeroWithMostResources = () => {
+    if (!matchStatus) {
       return
     }
     const heroes = [
-      ...Object.entries(heroStatus.player1).map(([, hero]) => hero),
-      ...Object.entries(heroStatus.player2).map(([, hero]) => hero),
+      ...Object.entries(matchStatus.player1).map(([, hero]) => hero),
+      ...Object.entries(matchStatus.player2).map(([, hero]) => hero),
     ]
-    const orderByStamina = (a: ISingleHeroStats, b: ISingleHeroStats) =>
-      a?.hero?.stamina - b?.hero?.stamina
-    const heroWithMostStamina = heroes.sort(orderByStamina)[0]
-    return heroWithMostStamina
+    const orderByResources = (a: ISingleHeroStats, b: ISingleHeroStats) =>
+      a?.hero?.resources - b?.hero?.resources
+    const heroWithMostResources = heroes.sort(orderByResources)[0]
+    return heroWithMostResources
   }
   useEffect(() => {
     setOccupant(undefined)
-    const { occupant } = isOccupied(position, heroStatus)
-    if (occupant && getHeroWithMostStamina() === occupant) {
+    const { occupant } = isOccupied(position, matchStatus)
+    if (occupant && getHeroWithMostResources() === occupant) {
       selectSquare(position)
       selectHero(occupant)
     }
@@ -66,7 +64,7 @@ export const Square = ({ position }: Props) => {
     } else if (occupant) {
       log(`💀 ${formatName(occupant.hero.name)} died !`)
     }
-  }, [heroStatus])
+  }, [matchStatus])
   const squareStyle = classNames(
     s.square,
     squareSelected === position && s.selected,
@@ -82,11 +80,11 @@ export const Square = ({ position }: Props) => {
       does(attackOptions).contain(position) &&
       s.attackOption,
   )
-  const substractStamina = () => {
+  const substractResources = () => {
     if (!heroSelected) {
       return
     }
-    return updateHero(heroSelected).stamina(-100)
+    return updateHero(heroSelected).resources(-100)
   }
   const substractHQHealth = () => {
     if (!heroSelected) {
@@ -95,7 +93,7 @@ export const Square = ({ position }: Props) => {
     if (!(isHQ1 || isHQ2)) {
       return
     }
-    const hq = isHQ1 ? heroStatus?.hq1 : heroStatus?.hq2
+    const hq = isHQ1 ? matchStatus?.hq1 : matchStatus?.hq2
     if (!hq) {
       return
     }
@@ -123,12 +121,12 @@ export const Square = ({ position }: Props) => {
     log(
       `${formatName(
         heroSelected.hero.name,
-      )} doesn't have enough stamina to perform this action`,
+      )} doesn't have enough resources to perform this action`,
     )
   }
   const handleAttackHQ = () => {
-    if (heroSelected && heroSelected.hero.stamina >= 100) {
-      substractStamina()
+    if (heroSelected && heroSelected.hero.resources >= 100) {
+      substractResources()
       substractHQHealth()
     } else if (heroSelected) {
       doNothing()
@@ -175,7 +173,7 @@ export const Square = ({ position }: Props) => {
         <>
           <Svg name="hq1" width={50} height={50} />
           <div className={s.hqHealthBar}>
-            <p className={s.hqHealth}>{heroStatus?.hq1.health}</p>
+            <p className={s.hqHealth}>{matchStatus?.hq1.health}</p>
           </div>
         </>
       )}
@@ -183,7 +181,7 @@ export const Square = ({ position }: Props) => {
         <>
           <Svg name="hq2" width={50} height={50} />
           <div className={s.hqHealthBar}>
-            <p className={s.hqHealth}>{heroStatus?.hq2.health}</p>
+            <p className={s.hqHealth}>{matchStatus?.hq2.health}</p>
           </div>
         </>
       )}

@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import s from './style.module.sass'
 
 type IStatusBar = {
-  label: 'stamina' | 'health' | 'power' | 'movement'
+  label: 'resources' | 'health' | 'power' | 'movement'
   value: number
   generic?: boolean
 }
 export const StatusBar = ({ label, value, generic = false }: IStatusBar) => {
   const [color, setColor] = useState('')
   useEffect(() => {
-    if (label === 'stamina') {
+    if (label === 'resources') {
       setColor('blue')
     } else if (label === 'health') {
       setColor('green')

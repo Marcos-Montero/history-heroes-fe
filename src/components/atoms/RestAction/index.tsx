@@ -4,7 +4,7 @@ import s from './style.module.sass'
 export const RestAction = () => {
   const { heroSelected, updateHero } = useBoard()
   const handleRest = () => {
-    heroSelected && updateHero(heroSelected).stamina(+200)
+    heroSelected && updateHero(heroSelected).resources(+200)
   }
   return (
     <div className={s.restAction_container} onClick={handleRest}>

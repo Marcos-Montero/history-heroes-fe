@@ -16,11 +16,11 @@ export const HeroFigure = ({
 }) => {
   const { log, heroSelected, updateHero } = useBoard()
 
-  const substractStamina = () => {
+  const substractResources = () => {
     if (!heroSelected) {
       return
     }
-    return updateHero(heroSelected).stamina(-100)
+    return updateHero(heroSelected).resources(-100)
   }
   const substractHealth = () => {
     if (!heroSelected) {
@@ -47,12 +47,12 @@ export const HeroFigure = ({
     log(
       `${formatName(
         heroSelected.hero.name,
-      )} doesn't have enough stamina to perform this action`,
+      )} doesn't have enough resources to perform this action`,
     )
   }
   const handleAttack = () => {
-    if (heroSelected && heroSelected.hero.stamina >= 100) {
-      substractStamina()
+    if (heroSelected && heroSelected.hero.resources >= 100) {
+      substractResources()
       substractHealth()
     } else if (heroSelected) {
       doNothing()

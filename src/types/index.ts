@@ -14,7 +14,7 @@ export interface IHero {
   role: RolesNames
   power: number
   health: number
-  stamina: number
+  resources: number
   movement: number
   defense: number
 }
@@ -31,7 +31,7 @@ export interface IHQStats {
   position: IPosition | undefined
   player: 1 | 2
 }
-export interface IHeroStatus {
+export interface IMatchStatus {
   hq1: IHQStats
   hq2: IHQStats
   player1: {

@@ -3,21 +3,21 @@ import s from './style.module.sass'
 import React from 'react'
 import classNames from 'classnames'
 import { formatName } from '../../../utils'
-import { IHeroStatus } from '../../../types'
+import { IMatchStatus } from '../../../types'
 const SingleHeroPanel = ({
-  heroStatus,
+  matchStatus,
   handleFieldChange,
   player,
   hero,
 }: {
-  heroStatus: IHeroStatus
+  matchStatus: IMatchStatus
   handleFieldChange: (e: React.ChangeEvent<HTMLSpanElement>) => void
   player: 1 | 2
   hero: 1 | 2 | 3
 }) => {
-  const heroSelected = heroStatus?.[`player${player}`]?.[`hero${hero}`]
+  const heroSelected = matchStatus?.[`player${player}`]?.[`hero${hero}`]
   const isDead = heroSelected?.hero.health <= 0
-  if (!heroStatus) {
+  if (!matchStatus) {
     return null
   }
   return (
@@ -30,8 +30,8 @@ const SingleHeroPanel = ({
           <span className={s.health} onChange={handleFieldChange}>
             {heroSelected?.hero.health}
           </span>
-          <span className={s.stamina} onChange={handleFieldChange}>
-            {heroSelected?.hero.stamina}
+          <span className={s.resources} onChange={handleFieldChange}>
+            {heroSelected?.hero.resources}
           </span>
           <span className={s.power} onChange={handleFieldChange}>
             {heroSelected?.hero.power}
@@ -45,7 +45,7 @@ const SingleHeroPanel = ({
   )
 }
 export const StatsPanel = () => {
-  const { heroStatus } = useBoard()
+  const { matchStatus } = useBoard()
   const handleFieldChange = (e: React.ChangeEvent<HTMLSpanElement>) => {
     const currentColor = e.target.style.color
     e.target.style.color = 'red'
@@ -53,26 +53,26 @@ export const StatsPanel = () => {
       e.target.style.color = currentColor
     }, 2000)
   }
-  if (!heroStatus) {
+  if (!matchStatus) {
     return null
   }
   return (
     <div className={s.statsContainer}>
       <div className={classNames(s.playerContainer, s.team1)}>
         <SingleHeroPanel
-          heroStatus={heroStatus}
+          matchStatus={matchStatus}
           handleFieldChange={handleFieldChange}
           player={1}
           hero={1}
         />
         <SingleHeroPanel
-          heroStatus={heroStatus}
+          matchStatus={matchStatus}
           handleFieldChange={handleFieldChange}
           player={1}
           hero={2}
         />
         <SingleHeroPanel
-          heroStatus={heroStatus}
+          matchStatus={matchStatus}
           handleFieldChange={handleFieldChange}
           player={1}
           hero={3}
@@ -80,19 +80,19 @@ export const StatsPanel = () => {
       </div>
       <div className={classNames(s.playerContainer, s.team2)}>
         <SingleHeroPanel
-          heroStatus={heroStatus}
+          matchStatus={matchStatus}
           handleFieldChange={handleFieldChange}
           player={2}
           hero={1}
         />
         <SingleHeroPanel
-          heroStatus={heroStatus}
+          matchStatus={matchStatus}
           handleFieldChange={handleFieldChange}
           player={2}
           hero={2}
         />
         <SingleHeroPanel
-          heroStatus={heroStatus}
+          matchStatus={matchStatus}
           handleFieldChange={handleFieldChange}
           player={2}
           hero={3}
