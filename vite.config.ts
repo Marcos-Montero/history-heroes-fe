@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
-// https://vitejs.dev/config/
+import builtins from 'rollup-plugin-node-builtins'
 export default defineConfig({
   plugins: [
     react(),
+    builtins(),
     svgr({
       // Set it to `true` to export React component as default.
       // Notice that it will overrides the default behavior of Vite.
@@ -27,28 +28,4 @@ export default defineConfig({
       exclude: '',
     }),
   ],
-  optimizeDeps: {
-    esbuildOptions: {
-      // Node.js global to browser globalThis
-      define: {
-        global: 'globalThis', // <-- AWS SDK
-      },
-    },
-  },
-  resolve: {
-    alias: {
-      '.runtimeConfig': './runtimeConfig.browser',
-      http: require.resolve('rollup-plugin-node-builtins'),
-      path: require.resolve('rollup-plugin-node-builtins'),
-      fs: require.resolve('rollup-plugin-node-builtins'),
-      os: require.resolve('rollup-plugin-node-builtins'),
-      tslib: require.resolve('rollup-plugin-node-builtins'),
-      child_process: require.resolve('rollup-plugin-node-builtins'),
-      crypto: require.resolve('rollup-plugin-node-builtins'),
-      stream: require.resolve('rollup-plugin-node-builtins'),
-      https: require.resolve('rollup-plugin-node-builtins'),
-      http2: require.resolve('rollup-plugin-node-builtins'),
-      process: require.resolve('rollup-plugin-node-builtins'),
-    },
-  },
 })
