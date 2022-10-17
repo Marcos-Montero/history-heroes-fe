@@ -28,4 +28,12 @@ export default defineConfig({
       exclude: '',
     }),
   ],
+  resolve: {
+    alias: [
+      {
+        find: '.runtimeConfig',
+        replacement: './runtimeConfig.browser',
+      },
+    ],
+  },
 })
