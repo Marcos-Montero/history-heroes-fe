@@ -1,0 +1,14 @@
+{
+  "resourceName": "hhStorage",
+  "policyUUID": "07564ff0",
+  "bucketName": "hh-bucket",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
