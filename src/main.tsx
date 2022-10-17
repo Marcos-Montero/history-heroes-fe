@@ -14,61 +14,71 @@ const fetchNotes = async () => {
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'nefertiti',
-      role: 'ruler',
-      power: 400,
-      health: 900,
-      resources: 200,
-      defense: 200,
-      movement: 3,
+      input: {
+        name: 'nefertiti',
+        role: 'ruler',
+        power: 400,
+        health: 900,
+        resources: 200,
+        defense: 200,
+        movement: 3,
+      },
     },
   })
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'leonidas',
-      role: 'warrior',
-      power: 200,
-      health: 1100,
-      resources: 200,
-      movement: 2,
-      defense: 300,
+      input: {
+        name: 'leonidas',
+        role: 'warrior',
+        power: 200,
+        health: 1100,
+        resources: 200,
+        movement: 2,
+        defense: 300,
+      },
     },
   })
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'marie_curie',
-      role: 'artist',
-      power: 250,
-      health: 800,
-      resources: 400,
-      movement: 4,
-      defense: 150,
+      input: {
+        name: 'marie_curie',
+        role: 'artist',
+        power: 250,
+        health: 800,
+        resources: 400,
+        movement: 4,
+        defense: 150,
+      },
     },
   })
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'da_vinci',
-      role: 'artist',
-      power: 150,
-      health: 800,
-      resources: 450,
-      movement: 4,
-      defense: 150,
+      input: {
+        name: 'da_vinci',
+        role: 'artist',
+        power: 150,
+        health: 800,
+        resources: 450,
+        movement: 4,
+        defense: 150,
+      },
     },
   })
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'attila',
-      role: 'ruler',
-      power: 300,
-      health: 850,
-      resources: 250,
-      movement: 3,
-      defense: 300,
+      input: {
+        name: 'attila',
+        role: 'ruler',
+        power: 300,
+        health: 850,
+        resources: 250,
+        movement: 3,
+        defense: 300,
+      },
     },
   })
   await API.graphql({
@@ -86,46 +96,63 @@ const fetchNotes = async () => {
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'isabel_i',
-      role: 'ruler',
-      power: 450,
-      health: 800,
-      resources: 200,
-      movement: 4,
-      defense: 150,
+      input: {
+        name: 'isabel_i',
+        role: 'ruler',
+        power: 450,
+        health: 800,
+        resources: 200,
+        movement: 4,
+        defense: 150,
+      },
     },
   })
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'bach',
-      role: 'artist',
-      power: 150,
-      health: 750,
-      resources: 500,
-      movement: 4,
-      defense: 200,
+      input: {
+        name: 'bach',
+        role: 'artist',
+        power: 150,
+        health: 750,
+        resources: 500,
+        movement: 4,
+        defense: 200,
+      },
     },
   })
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'cleopatra',
-      role: 'ruler',
-      power: 600,
-      health: 600,
-      resources: 300,
-      movement: 3,
-      defense: 200,
+      input: {
+        name: 'cleopatra',
+        role: 'ruler',
+        power: 600,
+        health: 600,
+        resources: 300,
+        movement: 3,
+        defense: 200,
+      },
     },
   })
   const apiData = await API.graphql({ query: listHeroes })
   return apiData
 }
 const AppX = ({ signOut }: { signOut: any }) => {
-  fetchNotes()
   return (
     <div>
+      <button
+        style={{
+          position: 'fixed',
+          top: '40%',
+          left: '40%',
+          padding: '30px',
+          zIndex: '60',
+        }}
+        onClick={fetchNotes}
+      >
+        CREATE DB!
+      </button>
       <BoardProvider>
         <App />
       </BoardProvider>
