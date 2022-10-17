@@ -84,13 +84,15 @@ const fetchNotes = async () => {
   await API.graphql({
     query: createHero,
     variables: {
-      name: 'sun_tzu',
-      role: 'thinker',
-      power: 300,
-      health: 750,
-      resources: 350,
-      movement: 4,
-      defense: 200,
+      input: {
+        name: 'sun_tzu',
+        role: 'thinker',
+        power: 300,
+        health: 750,
+        resources: 350,
+        movement: 4,
+        defense: 200,
+      },
     },
   })
   await API.graphql({
