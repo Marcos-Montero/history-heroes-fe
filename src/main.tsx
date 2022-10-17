@@ -7,11 +7,10 @@ import config from './aws-exports'
 import { withAuthenticator, Button } from '@aws-amplify/ui-react'
 import { listHeroes } from './graphql/queries'
 import { createHero } from './graphql/mutations'
-// import { createTodo, deleteTodo } from './graphql/mutations'
 
 Amplify.configure(config)
 
-async function fetchNotes() {
+const fetchNotes = async () => {
   await API.graphql({
     query: createHero,
     variables: {
