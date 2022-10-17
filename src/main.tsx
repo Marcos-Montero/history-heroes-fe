@@ -21,6 +21,6 @@ const AppX = ({ signOut }: { signOut: any }) => {
 const AppWithAuth = withAuthenticator(AppX)
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AppWithAuth />
+    <AppWithAuth signOut />
   </React.StrictMode>,
 )
