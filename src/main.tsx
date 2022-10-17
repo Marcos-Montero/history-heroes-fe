@@ -138,6 +138,7 @@ const fetchNotes = async () => {
     },
   })
   const apiData = await API.graphql({ query: listHeroes })
+  console.log(apiData)
   return apiData
 }
 const AppX = ({ signOut }: { signOut: any }) => {
