@@ -1,11 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
-import builtins from 'rollup-plugin-node-builtins'
+
 export default defineConfig({
   plugins: [
     react(),
-    builtins(),
     svgr({
       // Set it to `true` to export React component as default.
       // Notice that it will overrides the default behavior of Vite.
@@ -28,4 +27,12 @@ export default defineConfig({
       exclude: '',
     }),
   ],
+  resolve: {
+    alias: [
+      {
+        find: './runtimeConfig',
+        replacement: './runtimeConfig.browser',
+      },
+    ],
+  },
 })

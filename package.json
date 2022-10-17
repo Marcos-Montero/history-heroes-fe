@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^3.5.8",
+    "@rollup/plugin-alias": "^4.0.0",
     "aws-amplify": "^4.3.39",
     "classnames": "^2.3.1",
     "immer": "^9.0.15",
