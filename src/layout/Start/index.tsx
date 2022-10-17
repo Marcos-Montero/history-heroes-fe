@@ -5,16 +5,7 @@ import { heroes } from '../../constants/heroes'
 import { PickCard } from '../../components/molecules/PickCard'
 import { IHero } from '../../types'
 import { buildTriplet, does } from '../../utils'
-import {
-  ConfirmButton,
-  FinalCardsContainer,
-  FinalContainer,
-  PickableContainer,
-  RandomButton,
-  ResetButton,
-  StartButton,
-  StartContainer,
-} from './style'
+import s from './style.module.sass'
 
 export const Start = () => {
   const {
@@ -79,11 +70,11 @@ export const Start = () => {
   const allHeroesSelected =
     player1heroes.length === 3 && player2heroes.length === 3
   return (
-    <StartContainer>
+    <div className={s.startContainer}>
       {!allHeroesSelected ? (
         <>
           <h1>Pick your 3 heroes:</h1>
-          <PickableContainer>
+          <div className={s.pickableContainer}>
             {Object.entries(availableHeroes).map(([k, v], i) => {
               return (
                 <PickCard
@@ -99,36 +90,43 @@ export const Start = () => {
                 />
               )
             })}
-          </PickableContainer>
+          </div>
           {selectingPlayer === 1 && (
-            <ConfirmButton
+            <button
+              className={s.confirmButton}
               onClick={handleConfirmTeam}
               disabled={selectingPlayer === 1 && player1heroes.length !== 3}
             >
               Confirm Team
-            </ConfirmButton>
+            </button>
           )}
-          <RandomButton onClick={randomPick}>(?) Random Picks (?)</RandomButton>
+          <button className={s.randomButton} onClick={randomPick}>
+            (?) Random Picks (?)
+          </button>
         </>
       ) : (
-        <FinalContainer>
+        <div className={s.finalContainer}>
           <h1>These are the Heroes Selected:</h1>
-          <FinalCardsContainer>
+          <div className={s.finalCardsContainer}>
             <h1>Player 1: </h1>
             {Object.entries(player1heroes).map(([k, v], i) => {
               return <PickCard hero={v} key={i} />
             })}
-          </FinalCardsContainer>
-          <FinalCardsContainer>
+          </div>
+          <div className={s.finalCardsContainer}>
             <h1>Player 2: </h1>
             {Object.entries(player2heroes).map(([k, v], i) => {
               return <PickCard hero={v} key={i} />
             })}
-          </FinalCardsContainer>
-          <StartButton onClick={() => startGame()}>Start Game</StartButton>
-          <ResetButton onClick={handleReset}>⬅️Pick again</ResetButton>
-        </FinalContainer>
+          </div>
+          <button className={s.startButton} onClick={() => startGame()}>
+            Start Game
+          </button>
+          <button className={s.resetButton} onClick={handleReset}>
+            ⬅️Pick again
+          </button>
+        </div>
       )}
-    </StartContainer>
+    </div>
   )
 }
