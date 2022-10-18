@@ -1,11 +1,11 @@
 /* eslint-disable indent */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useBoard } from '../../context/boardContext'
-import { heroes } from '../../constants/heroes'
 import { PickCard } from '../../components/molecules/PickCard'
 import { IHero } from '../../types'
 import { buildTriplet, does } from '../../utils'
 import s from './style.module.sass'
+import { getHeroes, IHeroDB } from '../../api/getHeroes'
 
 export const Start = () => {
   const {
@@ -18,12 +18,15 @@ export const Start = () => {
     setPlayer2heroes,
     resetGame,
   } = useBoard()
+
   const [selectingPlayer, setSelectingPlayer] = useState(1)
-  const [availableHeroes, setAvailableHeroes] = useState<IHero[]>(
-    Object.entries(heroes).map(([k, v]) => v),
-  )
-  const resetAvailableHeroes = () => {
-    setAvailableHeroes(Object.entries(heroes).map(([k, v]) => v))
+  const [availableHeroes, setAvailableHeroes] = useState<
+    IHeroDB[] | undefined
+  >()
+
+  const resetAvailableHeroes = async () => {
+    const heroes = await getHeroes()
+    setAvailableHeroes(heroes)
   }
   const changeToPlayer2 = () => {
     setSelectingPlayer(2)
@@ -46,12 +49,17 @@ export const Start = () => {
     removeHero(hero, selectingPlayer)
   }
   const generateTeams = () => {
-    const heroValues = Object.values(heroes)
-    const randomTeam1 = buildTriplet(heroValues)
+    if (!availableHeroes) {
+      return
+    }
+    const randomTeam1 = buildTriplet(availableHeroes)
     const randomTeam2 = buildTriplet(randomTeam1.rest)
     return [randomTeam1, randomTeam2]
   }
   const randomPick = () => {
+    if (!availableHeroes) {
+      return
+    }
     const [randomTeam1, randomTeam2] = generateTeams()
     setPlayer1heroes(randomTeam1.triplet)
     setPlayer2heroes(randomTeam2.triplet)
@@ -69,13 +77,19 @@ export const Start = () => {
   }
   const allHeroesSelected =
     player1heroes.length === 3 && player2heroes.length === 3
+
+  useEffect(() => {
+    getHeroes().then((heroes) => {
+      setAvailableHeroes(heroes)
+    })
+  }, [])
   return (
     <div className={s.startContainer}>
       {!allHeroesSelected ? (
         <>
           <h1>Pick your 3 heroes:</h1>
           <div className={s.pickableContainer}>
-            {Object.entries(availableHeroes).map(([k, v], i) => {
+            {availableHeroes?.map((v, i) => {
               return (
                 <PickCard
                   hero={v}
