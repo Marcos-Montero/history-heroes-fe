@@ -50,7 +50,7 @@ export const Start = () => {
   }
   const generateTeams = () => {
     if (!availableHeroes) {
-      return
+      return []
     }
     const randomTeam1 = buildTriplet(availableHeroes)
     const randomTeam2 = buildTriplet(randomTeam1.rest)
