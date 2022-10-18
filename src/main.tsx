@@ -5,15 +5,10 @@ import { BoardProvider } from './context/boardContext'
 import { Amplify } from 'aws-amplify'
 import config from './aws-exports'
 import { withAuthenticator, Button } from '@aws-amplify/ui-react'
-import { getHeroes } from './api/getHeroes'
 
 Amplify.configure(config)
 
 const AppX = ({ signOut }: { signOut: any }) => {
-  const handleClick = async () => {
-    const heroes = await getHeroes()
-    console.log(heroes)
-  }
   return (
     <div>
       <BoardProvider>
